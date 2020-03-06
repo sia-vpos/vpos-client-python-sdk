@@ -1,2 +1,0 @@
-class COFException(Exception):
-    pass
