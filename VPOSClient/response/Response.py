@@ -23,12 +23,23 @@ class AuthorizeResponse:
         self.authorization = None
         self.pan_alias_data= None
 
+
 class OperationResponse:
     def __init__(self):
         # Timestamp Result
         self.timestamp = None
         self.result = None
         self.operation = None
+
+
+class ThreeDSAuthorize0Response:
+    def __init__(self):
+        # Timestamp Result
+        self.timestamp = None
+        self.result = None
+        self.three_DS_Method = None
+        self.three_DS_Challenge = None
+        self.authorization = None
 
 
 class Authorization:
@@ -53,6 +64,20 @@ class Authorization:
         self.paymentTypePP = get_tag_value(authorizationXml, TagConstants.getPaymentTypePPTag())
         self.rRN = get_tag_value(authorizationXml, TagConstants.getRRNTag())
         self.cardType = get_tag_value(authorizationXml, TagConstants.getCardType())
+
+
+class ThreeDSMethod:
+    def __init__(self, three_ds_method_xml):
+        self.three_ds_mtd_url = get_tag_value(three_ds_method_xml, TagConstants.getThreeDSMtdUrlTag())
+        self.three_ds_method_data = get_tag_value(three_ds_method_xml, TagConstants.getThreeDSMtdDataTag())
+        self.three_ds_tran_id = get_tag_value(three_ds_method_xml, TagConstants.getThreeDSTransactionIDTag())
+
+
+class ThreeDSChallenge:
+    def __init__(self, three_ds_challenge):
+        self.acs_url = get_tag_value(three_ds_challenge, TagConstants.getACSUrlTag())
+        self.creq = get_tag_value(three_ds_challenge, TagConstants.getCreqTag())
+        self.three_ds_tran_id = get_tag_value(three_ds_challenge, TagConstants.getThreeDSTransactionIDTag())
 
 
 class PanAliasData:

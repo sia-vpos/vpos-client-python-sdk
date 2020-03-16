@@ -234,6 +234,10 @@ def getThreeDSDataTag():
     return 'ThreeDSData'
 
 
+def getThreeDSMtdTag():
+    return 'ThreeDSMethod'
+
+
 def getNotifUrLTag():
     return 'NotifUrlTag'
 
@@ -319,6 +323,30 @@ def getPanExpiryDateTag():
 
 def getPaymentTypePPTag():
     return 'PaymentTypePP'
+
+
+def getThreeDSTransactionIDTag():
+    return 'ThreeDSTransId'
+
+
+def getACSUrlTag():
+    return 'ACSUrl'
+
+
+def getThreeDSChallengeTag():
+    return 'ThreeDSChallenge'
+
+
+def getCreqTag():
+    return 'CReq'
+
+
+def getThreeDSMtdUrlTag():
+    return 'ThreeDSMethodUrl'
+
+
+def getThreeDSMtdDataTag():
+    return 'ThreeDSMethodData'
 
 
 def getRRNTag():

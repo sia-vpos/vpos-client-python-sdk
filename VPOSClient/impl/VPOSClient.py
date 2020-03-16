@@ -2,7 +2,8 @@ import urllib.parse as urlparse
 
 import requests
 
-from VPOSClient.response.ResponseMapper import map_order_status_response, map_operation_response, map_authorize_response
+from VPOSClient.response.ResponseMapper import map_order_status_response, map_operation_response, \
+    map_authorize_response, map_three_ds_authorize0
 from VPOSClient.utils.RequestValidator import *
 from VPOSClient.utils.Utils import map_for_verify_url_mac
 from VPOSClient.vposRequests.Request import *
@@ -47,8 +48,7 @@ class VPosClient:
         three_ds0_auth = ThreeDSAuthorization0RequestXML(threeDS0_request, self._shop_id)
         request_xml = three_ds0_auth.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
-        # TODO : response mapping
-
+        return map_three_ds_authorize0(response)
 
     def capture(self, capture_request):
         """
