@@ -89,6 +89,40 @@ class PaymentInfo:
         self.shop_email = None
 
 
+class ThreeDSAuthorization0Request:
+    def __init__(self, order_id, operator_id, pan, exp_date, network, amount, currency, accounting_mode, three_ds_data,
+                 notify_url):
+        self.order_id = order_id
+        self.operator_id = operator_id
+        self.pan = pan
+        self.exp_date = exp_date
+        self.network = network
+        self.amount = amount
+        self.currency = currency
+        self.exponent = None
+        self.accounting_mode = accounting_mode
+        self.cvv2 = None
+        self.email_ch = None
+        self.name_ch = None
+        self.user_id = None
+        self.acquirer = None
+        self.ip_address = None
+        self.usr_auth_flag = None
+        self.op_descr = None
+        self.anti_fraud = None
+        self.product_ref = None
+        self.name = None
+        self.surname = None
+        self.tax_id = None
+        self.create_pan_alias = None
+        self.three_ds_data = three_ds_data
+        self.notify_url = notify_url
+        self.c_prof = None
+        self.three_ds_mtd_notify_url = None
+        self.challenge_win_size = None
+        self.merchant_key = None
+
+
 class VerifyPaymentRequestDto:
     def __init__(self, original_req_ref_num, shop_id, operator_id, options=None):
         self.original_req_ref_num = original_req_ref_num
@@ -179,3 +213,30 @@ class RefundRequest:
         self.operator_id = operator_id
         self.op_descr = op_descr
         self.options = options
+
+
+class AuthorizationRequest:
+    def __init__(self, order_id, operator_id, pan, exp_date, amount, currency, accounting_mode, network):
+        self.order_id = order_id
+        self.operator_id = operator_id
+        self.pan = pan
+        self.cvv2 = None
+        self.create_pan_alias = None
+        self.exp_date = exp_date
+        self.amount = amount
+        self.currency = currency
+        self.exponent = None
+        self.accounting_mode = accounting_mode
+        self.network = network
+        self.email_ch = None
+        self.user_id = None
+        self.acquirer = None
+        self.ip_address = None
+        self.usr_auth_flag = None
+        self.op_descr = None
+        self.options = None
+        self.anti_fraud = None
+        self.product_ref = None
+        self.name = None
+        self.surname = None
+        self.tax_id = None

@@ -2,7 +2,7 @@ import urllib.parse as urlparse
 
 import requests
 
-from VPOSClient.response.ResponseMapper import map_order_status_response, map_operation_response
+from VPOSClient.response.ResponseMapper import map_order_status_response, map_operation_response, map_authorize_response
 from VPOSClient.utils.RequestValidator import *
 from VPOSClient.utils.Utils import map_for_verify_url_mac
 from VPOSClient.vposRequests.Request import *
@@ -35,25 +35,20 @@ class VPosClient:
         paymentRequest = PaymentRequest(paymentInfo, self._shop_id)
         return Utils.getHtml(self._url_redirect, paymentRequest.getParametersMap(self._start_key, self._digest_mode))
 
-    def start3DSAuth(self, auth_3DS_request_dto):
-        """
-        :param auth_3DS_request_dto: data transfer object containing all the required parameters to perform the first
-        step of a 3DS authorization
-        :return: the outcome of the operation with the relative additional infos
-        """
-        validate_auth_3DS_request(auth_3DS_request_dto)
-        auth_3DS_request = Auth3DSRequest(auth_3DS_request_dto)
-        request_xml = auth_3DS_request.build_request(self._api_result_key, self._digest_mode)
-        self.verifyMacResponse(self._execute_call(request_xml))
+    def authorize(self, authorization_request):
+        validate_authorize(authorization_request)
+        authorization = OnlineAuthorizationRequestXml(authorization_request, self._shop_id)
+        request_xml = authorization.build_request(self._api_result_key, self._digest_mode)
+        response = self._execute_call(request_xml)
+        return map_authorize_response(response)
 
-    def start3DSAuthStep2(self, auth_3DS_step2_request_dto):
-        """
-        :param auth_3DS_step2_request_dto: data transfer object containing all the required parameters to perform the second step of a 3DS authorization
-        :return: the outcome of the operation with the relative additional infos
-        """
-        auth_3DS_step2_request = Start3DSAuthStep2Request(auth_3DS_step2_request_dto)
-        request_xml = auth_3DS_step2_request.build_request(self._api_result_key, self._digest_mode)
-        self.verifyMacResponse(self._execute_call(request_xml))
+    def threeDSAuthorize0(self, threeDS0_request):
+        validate_threeDSAuthorization0_request(threeDS0_request)
+        three_ds0_auth = ThreeDSAuthorization0RequestXML(threeDS0_request, self._shop_id)
+        request_xml = three_ds0_auth.build_request(self._api_result_key, self._digest_mode)
+        response = self._execute_call(request_xml)
+        # TODO : response mapping
+
 
     def capture(self, capture_request):
         """
@@ -94,7 +89,7 @@ class VPosClient:
         calculatedMac = Encoder.getMac(Utils.geResultStringForMac(response), self._api_result_key, self._digest_mode)
 
         if (not receivedMac.text == "NULL") & (not Encoder.compareDigest(receivedMac.text, calculatedMac)):
-            raise COFException("Response MAC is not valid")
+            raise VPOSException("Response MAC is not valid")
 
         data = response.find(TagConstants.getDataTag())
         if (data is not None) & (data.find(TagConstants.getOperationTag()) is not None):
@@ -104,7 +99,7 @@ class VPosClient:
             operation_received_mac = data.find(TagConstants.getOperationTag()).find(TagConstants.getMACTag())
             if (not operation_received_mac.text == "NULL") & (
                     not Encoder.compareDigest(operation_received_mac.text, operation_calculated_mac)):
-                raise COFException("Operation MAC is not valid")
+                raise VPOSException("Operation MAC is not valid")
 
         if (data is not None) & (data.find(TagConstants.getAuthorizationTag()) is not None):
             authorization_calculated_mac = Encoder.getMac(
@@ -113,7 +108,7 @@ class VPosClient:
             authorization_received_mac = data.find(TagConstants.getAuthorizationTag()).find(TagConstants.getMACTag())
             if (not authorization_received_mac.text == "NULL") & (
                     not Encoder.compareDigest(authorization_received_mac.text, authorization_calculated_mac)):
-                raise COFException("Authorization MAC is not valid")
+                raise VPOSException("Authorization MAC is not valid")
 
     def verifyMAC(self, url):
         """

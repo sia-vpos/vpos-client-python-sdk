@@ -94,9 +94,9 @@ class VerifyPaymentRequest(Request):
             Utils.addChild(verifyRequest, TagConstants.getOptionsTag(), self._options)
         Utils.addChild(verifyRequest, TagConstants.getOriginalReqRefNumTag(), self._original_req_ref_num)
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._stringForMac(), api_result_key, digest_mode)
+        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
 
-    def _stringForMac(self):
+    def _string_for_mac(self):
         macString = Constants.getOperationName()+"="+str(self._operation)
         macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
         macString = Utils.appendField(macString, Constants.getShopIdName(), self._shop_id)
@@ -127,10 +127,10 @@ class OrderStatusRequestXml(Request):
 
         # Calculate and set Mac
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._stringForMac(), api_result_key, digest_mode)
+        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
-    def _stringForMac(self):
+    def _string_for_mac(self):
         macString = str()
         macString = Constants.getOperationName()+"="+str(self._operation)
         macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
@@ -172,10 +172,10 @@ class CaptureRequestXml(Request):
             Utils.addChild(confirmRequest, TagConstants.getOptionsTag(), self._options)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._stringForMac(), api_result_key, digest_mode)
+        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
-    def _stringForMac(self):
+    def _string_for_mac(self):
         macString = Constants.getOperationName()+"="+str(self._operation)
         macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
         macString = Utils.appendField(macString, Constants.getShopIdName(), self._shop_id)
@@ -291,10 +291,10 @@ class Auth3DSRequest(Request):
         Utils.addOptionalChild(authorization3DS, TagConstants.getSignatureVerifytionTag(), self._signature_verification)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._stringForMac(), api_result_key, digest_mode)
+        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
-    def _stringForMac(self):
+    def _string_for_mac(self):
         macString = Constants.getOperationName()+"="+str(self._operation)
         macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
         macString = Utils.appendField(macString, Constants.getShopIdName(), self._shop_id)
@@ -360,10 +360,10 @@ class Start3DSAuthStep2Request(Request):
         Utils.addChild(authorization3DS, TagConstants.getOptionsTag(), self._options)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._stringForMac(), api_result_key, digest_mode)
+        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
-    def _stringForMac(self):
+    def _string_for_mac(self):
         macString = Constants.getOperationName() + "=" + str(self._operation)
         macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
         macString = Utils.appendField(macString, Constants.getShopIdName(), self._shop_id)
@@ -376,10 +376,121 @@ class Start3DSAuthStep2Request(Request):
         return macString
 
 
-class PaymentRequest:
+class ThreeDSAuthorization0RequestXML(Request):
+    def __init__(self, threeDS0_request, shop_id):
+        super().__init__(shop_id, threeDS0_request.operator_id, threeDS0_request.options)
+        self._operation = 'THREEDSAUTHORIZATION0'
+        self._order_id = threeDS0_request.order_id
+        self._pan = threeDS0_request.pan
+        self._exp_date = threeDS0_request.exp_date
+        self._network = threeDS0_request.network
+        self._amount = threeDS0_request.amount
+        self._currency = threeDS0_request.currency
+        self._exponent = threeDS0_request.exponent
+        self._accounting_mode = threeDS0_request.accounting_mode
+        self._cvv2 = threeDS0_request.cvv2
+        self._email_ch = threeDS0_request.email_ch
+        self._name_ch = threeDS0_request.name_ch
+        self._user_id = threeDS0_request.user_id
+        self._acquirer = threeDS0_request.acquirer
+        self._ip_address = threeDS0_request.ip_address
+        self._usr_auth_flag = threeDS0_request.usr_auth_flag
+        self._op_descr = threeDS0_request.op_descr
+        self._anti_fraud = threeDS0_request.anti_fraud
+        self._product_ref = threeDS0_request.product_ref
+        self._name = threeDS0_request.name
+        self._surname = threeDS0_request.surname
+        self._tax_id = threeDS0_request.tax_id
+        self._create_pan_alias = threeDS0_request.create_pan_alias
+        self._three_ds_data = threeDS0_request.three_ds_data.toJson()
+        self._notify_url = threeDS0_request.notify_url
+        self._c_prof = threeDS0_request.c_prof
+        self._three_ds_mtd_notify_url = threeDS0_request.three_ds_mtd_notify_url
+        self._challenge_win_size = threeDS0_request.challenge_win_size
+        self._merchant_key = threeDS0_request.merchant_key
+
+    def build_request(self, api_result_key, digest_mode):
+        request = self.get_request_base_xml(self._operation, TagConstants.getAuthorization3DSRequestTag())
+        authorization3DS = request.find(TagConstants.getDataTag()).find(TagConstants.getAuthorization3DSRequestTag())
+
+        Utils.addChild(authorization3DS, TagConstants.getOrderIDTag(), self._order_id)
+        Utils.addChild(authorization3DS, TagConstants.getPanTag(), self._pan)
+        Utils.addChild(authorization3DS, TagConstants.getExpDateTag(), self._exp_date)
+        Utils.addChild(authorization3DS, TagConstants.getAmountTag(), self._amount)
+        Utils.addChild(authorization3DS, TagConstants.getCurrencyTag(), self._currency)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getExponentTag(), self._exponent)
+        Utils.addChild(authorization3DS, TagConstants.getAccountingModeTag(), self._accounting_mode)
+        Utils.addChild(authorization3DS, TagConstants.getNetworkTag(), self._network)
+
+        # OPTIONAL CHILD
+        Utils.addOptionalChild(authorization3DS, TagConstants.getCVV2Tag(), self._cvv2)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getEmailCHTag(), self._email_ch)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getUseridTag(), self._user_id)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getAcquirerTag(), self._acquirer)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getIpAddressTag(), self._ip_address)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getUserAuthFlagTag(), self._usr_auth_flag)
+
+        Utils.addOptionalChild(authorization3DS, TagConstants.getOpDescrTag(), self._op_descr)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getOptionsTag(), self._options)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getAntiFraudTag(), self._anti_fraud)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getProductRefTag(), self._product_ref)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getNameTag(), self._name)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getSurnameTag(), self._surname)
+
+        Utils.addOptionalChild(authorization3DS, TagConstants.getTaxIDTag(), self._tax_id)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getCreatePanAliasTag(), self._create_pan_alias)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getThreeDSDataTag(), Utils.parse_url(AES.AES_encrypt(self._three_ds_data.toJson(), api_result_key)))
+        Utils.addOptionalChild(authorization3DS, TagConstants.getNotifUrLTag(), self._notify_url)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getCprofTag(), self._c_prof)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getThreeDSMtdNotifUrl(), self._three_ds_mtd_notify_url)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getChallengeWinSizeTag(), self._challenge_win_size)
+
+        mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
+        mac.text = Encoder.getMac(self._string_for_mac(api_result_key), api_result_key, digest_mode)
+        return ET.tostring(request, "utf-8", method='xml')
+
+    def _string_for_mac(self, api_result_key):
+        macString = Constants.getOperationName() + "=" + str(self._operation)
+        macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
+        macString = Utils.appendField(macString, Constants.getShopIdName(), self._shop_id)
+        macString = Utils.appendField(macString, Constants.getOrderIdName(), self._order_id)
+        macString = Utils.appendField(macString, Constants.getOperatorIdName(), self._operator_id)
+        macString = Utils.appendField(macString, Constants.getReqRefNumName(), self._reqRefNum)
+        macString = Utils.appendField(macString, Constants.getPanName(), self._pan)
+        macString = Utils.appendField(macString, Constants.getCvv2Name(), self._cvv2)
+        macString = Utils.appendField(macString, Constants.getExpDateName(), self._exp_date)
+
+        macString = Utils.appendField(macString, Constants.getAmountName(), self._amount)
+        macString = Utils.appendField(macString, Constants.getCurrencyName(), self._currency)
+        macString = Utils.appendField(macString, Constants.getExponentName(), self._exponent)
+        macString = Utils.appendField(macString, Constants.getAccountingModeName(), self._accounting_mode)
+
+        macString = Utils.appendField(macString, Constants.getNetworkName(), self._network)
+        macString = Utils.appendField(macString, Constants.getEmailChName(), self._email_ch)
+        macString = Utils.appendField(macString, Constants.getUserIdName(), self._user_id)
+        macString = Utils.appendField(macString, Constants.getAcquirerName(), self._acquirer)
+        macString = Utils.appendField(macString, Constants.getIpAddressName(), self._ip_address)
+        macString = Utils.appendField(macString, Constants.getOpDescrName(), self._op_descr)
+        macString = Utils.appendField(macString, Constants.getUsrAuthFlagName(), self._usr_auth_flag)
+        macString = Utils.appendField(macString, Constants.getOptionsName(), self._options)
+        macString = Utils.appendField(macString, Constants.getAntiFraudName(), self._anti_fraud)
+
+        macString = Utils.appendField(macString, Constants.getProductRefName(), self._product_ref)
+        macString = Utils.appendField(macString, Constants.getNameName(), self._name)
+        macString = Utils.appendField(macString, Constants.getSurnameName(), self._surname)
+        macString = Utils.appendField(macString, Constants.getTaxIdName(), self._tax_id)
+
+        macString = Utils.appendField(macString, Constants.getThreeDSDataName(), AES.AES_encrypt(self._three_ds_data.toJson(), api_result_key))
+        macString = Utils.appendField(macString, Constants.getNotifUrl(), self._notify_url)
+        macString = Utils.appendField(macString, Constants.getThreeDSMtdNotifUrlName(), self._three_ds_mtd_notify_url)
+        macString = Utils.appendField(macString, Constants.getChallengeWinSizeName(), self._challenge_win_size)
+        return macString
+
+
+class PaymentRequest(Request):
     def __init__(self, payment_info_request, shop_id):
-        self._shop_id = shop_id
-        self._options = payment_info_request.options
+        super().__init__(shop_id, payment_info_request.operator_id,
+                         payment_info_request.options)
         self._amount = payment_info_request.amount
         self._currency = payment_info_request.currency
         self._order_id = payment_info_request.order_id
@@ -446,7 +557,6 @@ class PaymentRequest:
         map[Constants.getProductRefName()] = self._product_ref
         map[Constants.getAntiFraudName()] = self._anti_fraud
 
-        # map 3ds Json Data TO DO
         if self._data_3DS_json is not None:
             map[Constants.get3DSJsonDataName()] = AES.AES_encrypt(self._data_3DS_json.toJson(), api_result_key)
 
@@ -454,10 +564,10 @@ class PaymentRequest:
         map[Constants.getUrlBackName()] = self._url_back
         map[Constants.getLangName()] = self._lang
         map[Constants.getShopEmailName()] = self._shop_email
-        map[Constants.getMacName()] = Encoder.getMac(self._stringForMac(api_result_key), api_result_key, digest_mode)
+        map[Constants.getMacName()] = Encoder.getMac(self._string_for_mac(api_result_key), api_result_key, digest_mode)
         return map
 
-    def _stringForMac(self, apiKey):
+    def _string_for_mac(self, apiKey):
         macString = Constants.getUrlMsName()+"="+self._url_ms
         macString = Utils.appendField(macString, Constants.getUrlDoneName(), self._url_done)
         macString = Utils.appendField(macString, Constants.getOrderIdName(), self._order_id)
@@ -492,3 +602,101 @@ class PaymentRequest:
         if self._data_3DS_json is not None:
             macString = Utils.appendField(macString, Constants.get3DSJsonDataName(), AES.AES_encrypt(self._data_3DS_json.toJson(), apiKey))
         return macString
+
+
+class OnlineAuthorizationRequestXml(Request):
+    def __init__(self, authorization_request, shop_id):
+        super().__init__(shop_id, authorization_request.operator_id,
+                         authorization_request.options)
+        self._operation = 'AUTHORIZATION'
+
+        self._order_id = authorization_request.order_id
+        self._pan = authorization_request.pan
+        self._cvv2 = authorization_request.cvv2
+        self._create_pan_alias = authorization_request.create_pan_alias
+        self._exp_date = authorization_request.exp_date
+        self._amount = authorization_request.amount
+        self._currency = authorization_request.currency
+        self._accounting_mode = authorization_request.accounting_mode
+        self._exponent = authorization_request.exponent
+        self._network = authorization_request.network
+        self._email_ch = authorization_request.email_ch
+        self._user_id = authorization_request.user_id
+        self._acquirer = authorization_request.acquirer
+        self._ip_address = authorization_request.ip_address
+        self._usr_auth_flag = authorization_request.usr_auth_flag
+        self._op_descr = authorization_request.op_descr
+        self._anti_fraud = authorization_request.anti_fraud
+        self._product_ref = authorization_request.product_ref
+
+        self._name = authorization_request.name
+        self._surname = authorization_request.surname
+        self._tax_id = authorization_request.tax_id
+        
+    def build_request(self, api_result_key, digest_mode):
+        request = self.get_request_base_xml(self._operation, TagConstants.getAuthorizationRequestTag())
+        authorization = request.find(TagConstants.getDataTag()).find(
+            TagConstants.getAuthorizationRequestTag())
+
+        Utils.addChild(authorization, TagConstants.getOrderIDTag(), self._order_id)
+        Utils.addChild(authorization, TagConstants.getPanTag(), self._pan)
+        Utils.addChild(authorization, TagConstants.getExpDateTag(), self._exp_date)
+        Utils.addChild(authorization, TagConstants.getAmountTag(), self._amount)
+        Utils.addChild(authorization, TagConstants.getCurrencyTag(), self._currency)
+        Utils.addOptionalChild(authorization, TagConstants.getExponentTag(), self._exponent)
+        Utils.addChild(authorization, TagConstants.getAccountingModeTag(), self._accounting_mode)
+        Utils.addChild(authorization, TagConstants.getNetworkTag(), self._network)
+
+        # OPTIONAL CHILD
+        Utils.addOptionalChild(authorization, TagConstants.getCVV2Tag(), self._cvv2)
+        Utils.addOptionalChild(authorization, TagConstants.getEmailCHTag(), self._email_ch)
+        Utils.addOptionalChild(authorization, TagConstants.getUseridTag(), self._user_id)
+        Utils.addOptionalChild(authorization, TagConstants.getAcquirerTag(), self._acquirer)
+        Utils.addOptionalChild(authorization, TagConstants.getIpAddressTag(), self._ip_address)
+        Utils.addOptionalChild(authorization, TagConstants.getUserAuthFlagTag(), self._usr_auth_flag)
+
+        Utils.addOptionalChild(authorization, TagConstants.getOpDescrTag(), self._op_descr)
+        Utils.addOptionalChild(authorization, TagConstants.getOptionsTag(), self._options)
+        Utils.addOptionalChild(authorization, TagConstants.getAntiFraudTag(), self._anti_fraud)
+        Utils.addOptionalChild(authorization, TagConstants.getProductRefTag(), self._product_ref)
+        Utils.addOptionalChild(authorization, TagConstants.getNameTag(), self._name)
+        Utils.addOptionalChild(authorization, TagConstants.getSurnameTag(), self._surname)
+
+        Utils.addOptionalChild(authorization, TagConstants.getTaxIDTag(), self._tax_id)
+        Utils.addOptionalChild(authorization, TagConstants.getCreatePanAliasTag(), self._create_pan_alias)
+
+        mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
+        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
+        return ET.tostring(request, "utf-8", method='xml')
+
+    def _string_for_mac(self):
+        macString = Constants.getOperationName() + "=" + str(self._operation)
+        macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
+        macString = Utils.appendField(macString, Constants.getShopIdName(), self._shop_id)
+        macString = Utils.appendField(macString, Constants.getOrderIdName(), self._order_id)
+        macString = Utils.appendField(macString, Constants.getOperatorIdName(), self._operator_id)
+        macString = Utils.appendField(macString, Constants.getReqRefNumName(), self._reqRefNum)
+        macString = Utils.appendField(macString, Constants.getPanName(), self._pan)
+        macString = Utils.appendField(macString, Constants.getCvv2Name(), self._cvv2)
+        macString = Utils.appendField(macString, Constants.getExpDateName(), self._exp_date)
+        macString = Utils.appendField(macString, Constants.getAmountName(), self._amount)
+        macString = Utils.appendField(macString, Constants.getCurrencyName(), self._currency)
+        macString = Utils.appendField(macString, Constants.getExponentName(), self._exponent)
+        macString = Utils.appendField(macString, Constants.getAccountingModeName(), self._accounting_mode)
+
+        macString = Utils.appendField(macString, Constants.getNetworkName(), self._network)
+        macString = Utils.appendField(macString, Constants.getEmailChName(), self._email_ch)
+        macString = Utils.appendField(macString, Constants.getUserIdName(), self._user_id)
+        macString = Utils.appendField(macString, Constants.getAcquirerName(), self._acquirer)
+        macString = Utils.appendField(macString, Constants.getIpAddressName(), self._ip_address)
+        macString = Utils.appendField(macString, Constants.getOpDescrName(), self._op_descr)
+        macString = Utils.appendField(macString, Constants.getUsrAuthFlagName(), self._usr_auth_flag)
+        macString = Utils.appendField(macString, Constants.getOptionsName(), self._options)
+        macString = Utils.appendField(macString, Constants.getAntiFraudName(), self._anti_fraud)
+
+        macString = Utils.appendField(macString, Constants.getProductRefName(), self._product_ref)
+        macString = Utils.appendField(macString, Constants.getNameName(), self._name)
+        macString = Utils.appendField(macString, Constants.getSurnameName(), self._surname)
+        macString = Utils.appendField(macString, Constants.getTaxIdName(), self._tax_id)
+        return macString
+        

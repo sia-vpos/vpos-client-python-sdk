@@ -15,6 +15,14 @@ class OrderStatusResponse:
         self.pan_alias_data = None
 
 
+class AuthorizeResponse:
+    def __init__(self):
+        # Timestamp Result
+        self.timestamp = None
+        self.result = None
+        self.authorization = None
+        self.pan_alias_data= None
+
 class OperationResponse:
     def __init__(self):
         # Timestamp Result

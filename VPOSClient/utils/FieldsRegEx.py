@@ -92,9 +92,33 @@ def get_network_Reg_Ex():
     return "[0-9]{" + str(e_len) + "}"
 
 
+def get_user_id_Reg_Ex():
+    min_len = 1
+    max_len = 255
+    return ".{" + str(min_len) + "," + str(max_len) + "}"
+
+
+def get_op_descr_Reg_Ex():
+    min_len = 1
+    max_len = 100
+    return ".{" + str(min_len) + "," + str(max_len) + "}"
+
+
+def get_email_ch_Reg_Ex():
+    min_len = 7
+    max_len = 50
+    return ".{" + str(min_len) + "," + str(max_len) + "}"
+
+
 def get_accounting_mode_Reg_Ex():
     e_len = 1
     return "[DI]{" + str(e_len) + "}"
+
+
+def get_cvv2_Reg_Ex():
+    min_len = 3
+    max_len = 4
+    return "[0-9]{" + str(min_len) + "," + str(max_len) + "}"
 
 
 def get_author_mode_Reg_Ex():
@@ -126,3 +150,25 @@ def get_close_order_Reg_Ex():
 
 def get_pares_Reg_Ex():
     return "([Y]|[N]|[A]|[U]){1}"
+
+
+def get_tax_id_Reg_Ex():
+    fc_len = 16
+    ti_len = 11
+    return "^([A-Z0-9]{" + str(fc_len) + "}|[0-9]{" + str(ti_len) + "})"
+
+
+def get_surname_Reg_Ex():
+    min_len = 1
+    max_len = 40
+    return ".{" + str(min_len) + "," + str(max_len) + "}"
+
+
+def get_name_Reg_Ex():
+    min_len = 1
+    max_len = 40
+    return ".{" + str(min_len) + "," + str(max_len) + "}"
+
+
+def get_anti_fraud_Reg_Ex():
+    return ".*"

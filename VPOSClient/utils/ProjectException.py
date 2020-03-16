@@ -1,2 +1,2 @@
-class COFException(Exception):
+class VPOSException(Exception):
     pass

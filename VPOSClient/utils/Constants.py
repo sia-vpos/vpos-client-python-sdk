@@ -110,6 +110,22 @@ def getSurnameName():
     return 'SURNAME'
 
 
+def getThreeDSDataName():
+    return 'THREEDSDATA'
+
+
+def getNotifUrl():
+    return 'NOTIFURL'
+
+
+def getThreeDSMtdNotifUrlName():
+    return 'THREEDSMTDNOTIFURL'
+
+
+def getChallengeWinSizeName():
+    return 'CHALLENGEWINSIZE'
+
+
 def getTaxIdName():
     return 'TAXID'
 

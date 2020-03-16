@@ -28,7 +28,7 @@ pares = 'eNqtWMmSo8iy3fMVZXWXWDUzgjJlXmMWIJCYhx0CxAwSg0D6+ocya+q61W3VbU8bgePh4RH
 base64_Html = "PGh0bWw+Cgo8Ym9keT4KICAgIDxzdHlsZT4KICAgICAgICBib2R5IHsKICAgICAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogdXJsKCdodHRwczovL2kuZ2lwaHkuY29tL21lZGlhLzNvRWpJNlNJSUhCZFJ4WEk0MC9naXBoeS53ZWJwJyk7CiAgICAgICAgICAgIGJhY2tncm91bmQtcmVwZWF0OiBuby1yZXBlYXQ7CiAgICAgICAgICAgIGJhY2tncm91bmQtYXR0YWNobWVudDogZml4ZWQ7CiAgICAgICAgICAgIGJhY2tncm91bmQtcG9zaXRpb246IGNlbnRlcjsKICAgICAgICB9CiAgICA8L3N0eWxlPgo8L2JvZHk+Cgo8L2h0bWw+"
 
 config = VPosConfig(shop_id, redirect_key, urlRedirect, apiResultKey, urlApi)
-config.config_proxy("proxy-dr.reply.it",8080)
+config.config_proxy("proxy-dr.reply.it", 8080)
 client = VPosClient(config)
 # impl.set_proxy("proxy-dr.reply.it:8080")
 
@@ -36,4 +36,5 @@ client = VPosClient(config)
 
 #print(client.getOrderStatus(OrderStatusRequest("12345676912345649849", operatorId)))
 #client.capture(build_confirm_transaction("8032112928AT1gx2zgaykxk74", amount, currency, "15816791805478866964400948992201416592057357867885", shop_id, operatorId))
-client.refund(build_refund_request("8032112928AT1gx2zgaykxk74", "15816791805478866964400948992201416592057357867885", amount, currency, shop_id, operatorId))
+#client.refund(build_refund_request("8032112928AT1gx2zgaykxk74", "15816791805478866964400948992201416592057357867885", amount, currency, shop_id, operatorId))
+client.authorize(build_authorize())

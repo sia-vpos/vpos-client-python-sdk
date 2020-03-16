@@ -230,6 +230,25 @@ def getCreatePanAliasTag():
     return 'CreatePanAlias'
 
 
+def getThreeDSDataTag():
+    return 'ThreeDSData'
+
+
+def getNotifUrLTag():
+    return 'NotifUrlTag'
+
+
+def getCprofTag():
+    return 'Cprof'
+
+
+def getThreeDSMtdNotifUrl():
+    return'ThreeDSMtdNotifUrl'
+
+
+def getChallengeWinSizeTag():
+    return 'ChallengeWinSize'
+
 def getParesTag():
     return 'PaRes'
 
@@ -332,3 +351,8 @@ def getPanAliasRevTag():
 
 def getPanAliasDataTag():
     return 'PanAliasData'
+
+
+def getAuthorizationRequestTag():
+    return 'AuthorizationRequest'
+
