@@ -1,57 +1,3 @@
-class Auth3DSRequestDto:
-    def __init__(self, shop_id, order_id, operator_id, pan, exp_date, amount, currency, accounting_mode, network,
-                 isMasterPass):
-        # COMPULSORY PROPERTY
-        self.is_master_pass = isMasterPass
-        self.shop_id = shop_id
-        self.order_id = order_id
-        self.operator_id = operator_id
-        self.pan = pan
-        self.exp_date = exp_date
-        self.amount = amount
-        self.currency = currency
-        self.accounting_mode = accounting_mode
-        self.network = network
-        # NOT COMPULSORY
-        self.cvv2 = None
-        self.exponent = None
-        self.email_ch = None
-        self.user_id = None
-        self.acquirer = None
-        self.ip_address = None
-        self.usr_auth_flag = None
-        self.op_descr = None
-        self.options = None
-        self.anti_fraud = None
-        self.product_ref = None
-        self.name = None
-        self.surname = None
-        self.tax_id = None
-        self.create_pan_alias = None
-        self.in_person = None
-        self.merchant_url = None
-        self.service = None
-        self.xId = None
-        self.cavv = None
-        self.eci = None
-        self.pp_authenticate_method = None
-        self.card_enroll_method = None
-        self.pares_status = None
-        self.scen_roll_status = None
-        self.signature_verification = None
-
-
-class Auth3DSStep2RequestDto:
-    def __init__(self, shop_id, order_id, operator_id, original_req_ref_num, pares):
-        self.shop_id = shop_id
-        self.order_id = order_id
-        self.operator_id = operator_id
-        self.original_req_ref_num = original_req_ref_num
-        self.pares = pares
-        self.acquirer = None
-        self.options = None
-
-
 class PaymentInfo:
     def __init__(self, url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
                  authorMode):
@@ -123,12 +69,17 @@ class ThreeDSAuthorization0Request:
         self.merchant_key = None
 
 
-class VerifyPaymentRequestDto:
-    def __init__(self, original_req_ref_num, shop_id, operator_id, options=None):
-        self.original_req_ref_num = original_req_ref_num
-        self.shop_id = shop_id
+class ThreeDSAuthorization1Request:
+    def __init__(self, operator_id, three_DS_trans_id, three_DS_Mtd_compl_ind):
         self.operator_id = operator_id
-        self.options = options
+        self.three_DS_trans_id = three_DS_trans_id
+        self.three_DS_Mtd_compl_ind = three_DS_Mtd_compl_ind
+
+
+class ThreeDSAuthorization2Request:
+    def __init__(self, operator_id, three_DS_trans_id):
+        self.operator_id = operator_id
+        self.three_DS_trans_id = three_DS_trans_id
 
 
 class CaptureRequest:

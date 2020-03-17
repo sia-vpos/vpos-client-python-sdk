@@ -26,6 +26,14 @@ def getReqRefNumName():
     return 'REQREFNUM'
 
 
+def getThreeDSMtdComplIndName():
+    return 'THREEDSMTDCOMPLIND'
+
+
+def getThreeDSTransIdName():
+    return 'THREEDSTRANSID'
+
+
 def getOrderIdName():
     return 'ORDERID'
 

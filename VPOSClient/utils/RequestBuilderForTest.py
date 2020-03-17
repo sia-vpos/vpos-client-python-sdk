@@ -1,4 +1,4 @@
-from VPOSClient.request.RequestDto import *
+from VPOSClient.request.Request import *
 
 
 def build_start_3DS_Auth_Request(shop_id, orderId, operatorId, expDate, amount, currency, accountingMode):

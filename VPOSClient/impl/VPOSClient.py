@@ -3,10 +3,10 @@ import urllib.parse as urlparse
 import requests
 
 from VPOSClient.response.ResponseMapper import map_order_status_response, map_operation_response, \
-    map_authorize_response, map_three_ds_authorize0
+    map_authorize_response, map_three_ds_authorize0, map_three_ds_authorize1, map_three_ds_authorize2
 from VPOSClient.utils.RequestValidator import *
 from VPOSClient.utils.Utils import map_for_verify_url_mac
-from VPOSClient.vposRequests.Request import *
+from VPOSClient.request.RequestXML import *
 
 
 class VPosClient:
@@ -49,6 +49,20 @@ class VPosClient:
         request_xml = three_ds0_auth.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
         return map_three_ds_authorize0(response)
+
+    def threeDSAuthorize1(self, threeDS1_request):
+        validate_threeDSAuthorization1_request(threeDS1_request)
+        three_ds1_auth = ThreeDSAuthorization1RequestXML(threeDS1_request, self._shop_id)
+        request_xml = three_ds1_auth.build_request(self._api_result_key, self._digest_mode)
+        response = self._execute_call(request_xml)
+        return map_three_ds_authorize1(response)
+
+    def threeDSAuthorize2(self, threeDS2_request):
+        validate_threeDSAuthorization2_request(threeDS2_request)
+        three_ds2_auth = ThreeDSAuthorization2RequestXML(threeDS2_request, self._shop_id)
+        request_xml = three_ds2_auth.build_request(self._api_result_key, self._digest_mode)
+        response = self._execute_call(request_xml)
+        return map_three_ds_authorize2(response)
 
     def capture(self, capture_request):
         """

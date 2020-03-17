@@ -1,161 +1,114 @@
 import re
 
 from VPOSClient.impl.VPosConfig import VPosConfig
-from VPOSClient.request.RequestDto import *
+from VPOSClient.request.Request import *
 from VPOSClient.utils import Constants
 from VPOSClient.utils.Constants import *
 from VPOSClient.utils.FieldsRegEx import *
 from VPOSClient.utils.ProjectException import VPOSException
 
 
-def validate_auth_3DS_request(auth3DSRequestDto):
-    if not isinstance(auth3DSRequestDto, Auth3DSRequestDto):
-        raise VPOSException("invalid request type")
-
-    _validate_common_fields(auth3DSRequestDto)
-
-    if auth3DSRequestDto.pan is None or not re.search(get_pan_Reg_Ex(), auth3DSRequestDto.pan):
-        raise VPOSException("invalid pan")
-
-    if auth3DSRequestDto.exp_date is None or not re.search(get_exp_date_Reg_Ex(), auth3DSRequestDto.exp_date):
-        raise VPOSException("invalid exp date")
-
-    if auth3DSRequestDto.accounting_mode is None or not re.search(get_accounting_mode_Reg_Ex(),
-                                                                  auth3DSRequestDto.accounting_mode):
-        raise VPOSException("invalid accounting mode")
-
-    if auth3DSRequestDto.network is None or not re.search(get_network_Reg_Ex(), auth3DSRequestDto.network):
-        raise VPOSException("invalid network ")
-
-    if auth3DSRequestDto.is_master_pass is None or not isinstance(auth3DSRequestDto.is_master_pass, bool):
-        raise VPOSException("invalid is master pass")
-
-    if auth3DSRequestDto.amount is None or not re.search(get_amount_Reg_Ex(), auth3DSRequestDto.amount):
-        raise VPOSException("invalid amount pass")
-
-    if auth3DSRequestDto.currency is None or not re.search(get_currency_Reg_Ex(), auth3DSRequestDto.currency):
-        raise VPOSException("invalid currency pass")
-
-
 def validate_order_status_request(order_status_request):
-    if order_status_request.order_id is None or not re.search(get_order_id_Reg_Ex(), order_status_request.order_id):
-        raise VPOSException("invalid order Id")
-
-    if order_status_request.operator_id is None or not re.search(get_operator_id_Reg_Ex(),
-                                                                 order_status_request.operator_id):
-        raise VPOSException("invalid operator Id")
+    invalid_fields = []
+    _validate_common_fields(order_status_request, invalid_fields)
 
     if order_status_request.product_ref is not None and not re.search(get_product_ref_Reg_Ex(),
                                                                       order_status_request.product_ref):
-        raise VPOSException("invalid product ref")
+        invalid_fields.append(Constants.getProductRefName())
+
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
 
 
 def validate_refund_payment_request(refund_request):
+    invalid_fields = []
     if not isinstance(refund_request, RefundRequest):
         raise VPOSException("invalid request type")
 
-    _validate_common_fields(refund_request)
+    _validate_common_fields(refund_request, invalid_fields)
 
     if refund_request.transaction_id is None:
-        raise VPOSException("invalid transaction Id")
+        invalid_fields.append(Constants.getTransactionIdName())
 
     if refund_request.amount is None or not re.search(get_amount_Reg_Ex(), refund_request.amount):
-        raise VPOSException("invalid amount")
+        invalid_fields.append(Constants.getAmountName())
 
-    _validate_currency_and_exponent(refund_request)
+    _validate_currency_and_exponent(refund_request, invalid_fields)
 
-
-def validate_verify_payment_request(original_req_ref_num, shop_id, operator_id):
-    if shop_id is None or not re.search(get_shop_id_Reg_Ex(), shop_id):
-        raise VPOSException("invalid shop Id")
-
-    if original_req_ref_num is None or not re.search(get_req_ref_num_Reg_EX(), original_req_ref_num):
-        raise VPOSException("invalid original req ref num")
-
-    if operator_id is None or not re.search(get_operator_id_Reg_Ex(), operator_id):
-        raise VPOSException("invalid operator Id")
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
 
 
 def validate_capture_request(capture_request):
+    invalid_fields = []
     if not isinstance(capture_request, CaptureRequest):
         raise VPOSException("invalid request type")
 
-    _validate_common_fields(capture_request)
-    _validate_currency_and_exponent(capture_request)
+    _validate_common_fields(capture_request, invalid_fields)
+    _validate_currency_and_exponent(capture_request, invalid_fields)
 
     if capture_request.transaction_id is None:
-        raise VPOSException("invalid transaction Id")
+        invalid_fields.append(Constants.getTransactionIdName())
 
     if capture_request.amount is None or not re.search(get_amount_Reg_Ex(),
                                                        capture_request.amount):
-        raise VPOSException("invalid amount")
+        invalid_fields.append(Constants.getAmountName())
+
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
 
 
-def validate_start_3DS_auth_step2(auth_3DS_step2_request_dto):
-    if not isinstance(auth_3DS_step2_request_dto, Auth3DSStep2RequestDto):
-        raise VPOSException("invalid request type")
-
-    _validate_common_fields(auth_3DS_step2_request_dto)
-
-    if auth_3DS_step2_request_dto.original_req_ref_num is None or not re.search(get_req_ref_num_Reg_EX(),
-                                                                                auth_3DS_step2_request_dto.original_req_ref_num):
-        raise VPOSException("invalid original req ref num")
-
-    if auth_3DS_step2_request_dto.pares is None or not re.search(get_pares_Reg_Ex(), auth_3DS_step2_request_dto.pares):
-        raise VPOSException("invalid pares")
-
-    if auth_3DS_step2_request_dto.acquirer is not None and not re.search(get_acquirer_Reg_Ex(),
-                                                                         auth_3DS_step2_request_dto.acquirer):
-        raise VPOSException("invalid acquirer")
-
-
-def _validate_common_fields(request):
+def _validate_common_fields(request, invalid_fields):
     if request.order_id is None or not re.search(get_order_id_Reg_Ex(), request.order_id):
-        raise VPOSException("invalid order Id")
+        invalid_fields.append(Constants.getOrderIdName())
 
     if request.operator_id is None or not re.search(get_operator_id_Reg_Ex(),
                                                     request.operator_id):
-        raise VPOSException("invalid operator Id")
+        invalid_fields.append(Constants.getOperatorIdName())
 
 
-def _validate_currency_and_exponent(request):
+def _validate_currency_and_exponent(request, invalid_fields):
     if request.currency is None or not re.search(get_currency_Reg_Ex(), request.currency):
-        raise VPOSException("invalid currency")
+        invalid_fields.append(Constants.getCurrencyName())
 
     if request.currency != getEurCurrencyName() and request.exponent is None:
-        raise VPOSException("invalid or missing exponent")
+        invalid_fields.append(Constants.getExponentName())
 
 
 def validate_redirect_request(request):
+    invalid_fields = []
     if not isinstance(request, PaymentInfo):
         raise VPOSException("invalid request type")
 
     if request.amount is None or not re.search(get_amount_Reg_Ex(),
                                                request.amount):
-        raise VPOSException("invalid amount")
+        invalid_fields.append(Constants.getAmountName())
 
     if request.currency is None or not re.search(get_currency_Reg_Ex(), request.currency):
-        raise VPOSException("invalid currency")
+        invalid_fields.append(Constants.getCurrencyName())
 
     if request.order_id is None or not re.search(get_order_id_Reg_Ex(), request.order_id):
-        raise VPOSException("invalid order Id")
+        invalid_fields.append(Constants.getOrderIdName())
 
     if request.url_back is None:
-        raise VPOSException("missing url back")
+        invalid_fields.append(Constants.getUrlBackName())
 
     if request.url_done is None:
-        raise VPOSException("missing url done")
+        invalid_fields.append(Constants.getUrlDoneName())
 
     if request.url_ms is None:
-        raise VPOSException("missing url ms")
+        invalid_fields.append(Constants.getUrlMsName())
 
     if request.accounting_mode is None or not re.search(get_accounting_mode_Reg_Ex(),
                                                         request.accounting_mode):
-        raise VPOSException("invalid accounting mode")
+        invalid_fields.append(Constants.getAccountingModeName())
 
     if request.author_mode is None or not re.search(get_author_mode_Reg_Ex(),
                                                     request.author_mode):
-        raise VPOSException("invalid accounting mode")
+        invalid_fields.append(Constants.getAuthorModeName())
+
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
 
 
 def validate_config(config):
@@ -178,154 +131,191 @@ def validate_config(config):
 
 
 def validate_threeDSAuthorization0_request(request):
+    invalid_fields = []
     if not isinstance(request, ThreeDSAuthorization0Request):
         raise VPOSException("invalid request type")
 
-    _validate_common_fields(request)
+    _validate_common_fields(request, invalid_fields)
 
     if request.pan is None or not re.search(get_pan_Reg_Ex(), request.pan):
-        raise VPOSException("invalid pan")
+        invalid_fields.append(Constants.getPanName())
 
     if request.exp_date is None or not re.search(get_exp_date_Reg_Ex(), request.exp_date):
-        raise VPOSException("invalid exp date")
+        invalid_fields.append(Constants.getExpDateName())
 
     if request.cvv2 is not None and not re.search(get_cvv2_Reg_Ex(),
                                              request.cvv2):
-        raise VPOSException("invalid cvv2")
+        invalid_fields.append(Constants.getCvv2Name())
 
     if request.accounting_mode is None or not re.search(get_accounting_mode_Reg_Ex(),
                                                         request.accounting_mode):
-        raise VPOSException("invalid accounting mode")
+        invalid_fields.append(Constants.getAccountingModeName())
 
     if request.amount is None or not re.search(get_amount_Reg_Ex(),
                                                         request.amount):
-        raise VPOSException("invalid amount")
+        invalid_fields.append(Constants.getAmountName())
 
-    _validate_currency_and_exponent(request)
+    _validate_currency_and_exponent(request, invalid_fields)
 
     if request.network is None or not re.search(get_network_Reg_Ex(), request.network):
-        raise VPOSException("invalid network ")
+        invalid_fields.append(Constants.getNetworkName())
 
     if request.email_ch is not None and not re.search(get_email_ch_Reg_Ex(),
                                              request.email_ch):
-        raise VPOSException("invalid email")
+        invalid_fields.append(Constants.getEmailChName())
 
     if request.user_id is not None and not re.search(get_user_id_Reg_Ex(),
                                              request.user_id):
-        raise VPOSException("invalid user id")
+        invalid_fields.append(Constants.getUserIdName())
 
     if request.acquirer is not None and not re.search(get_acquirer_Reg_Ex(),
                                              request.acquirer):
-        raise VPOSException("invalid acquirer")
+        invalid_fields.append(Constants.getAcquirerName())
 
     if request.ip_address is not None and not re.search(get_ip_address_Reg_Ex(),
                                              request.ip_address):
-        raise VPOSException("invalid ip address")
+        invalid_fields.append(Constants.getIpAddressName())
 
     if request.usr_auth_flag is not None and not re.search(get_usr_auth_flag_Reg_Ex(),
                                              request.usr_auth_flag):
-        raise VPOSException("invalid usr auth flag")
+        invalid_fields.append(Constants.getUsrAuthFlagName())
 
     if request.op_descr is not None and not re.search(get_op_descr_Reg_Ex(),
                                              request.op_descr):
-        raise VPOSException("invalid op descr")
+        invalid_fields.append(Constants.getOpDescrName())
 
     if request.anti_fraud is not None and not re.search(get_anti_fraud_Reg_Ex(),
                                              request.anti_fraud):
-        raise VPOSException("invalid anti_fraud")
+        invalid_fields.append(Constants.getAntiFraudName())
 
     if request.product_ref is not None and not re.search(get_product_ref_Reg_Ex(),
                                              request.product_ref):
-        raise VPOSException("invalid product Ref")
+        invalid_fields.append(Constants.getProductRefName())
 
     if request.name is not None and not re.search(get_name_Reg_Ex(),
                                              request.name):
-        raise VPOSException("invalid name")
+        invalid_fields.append(Constants.getNameName())
 
     if request.surname is not None and not re.search(get_surname_Reg_Ex(),
                                              request.surname):
-        raise VPOSException("invalid surname")
+        invalid_fields.append(Constants.getSurnameName())
 
     if request.tax_id is not None and not re.search(get_tax_id_Reg_Ex(),
                                              request.tax_id):
-        raise VPOSException("invalid tax id")
+        invalid_fields.append(Constants.getTaxIdName())
 
     if request.three_ds_data is None or not isinstance(request.three_ds_data, Data3DSJsonDto):
-        raise VPOSException("invalid three_ds_data")
+        invalid_fields.append(Constants.getThreeDSDataName())
 
     if request.notify_url is None :
-        raise VPOSException("invalid notify url")
+        invalid_fields.append(Constants.getNotifUrl())
+
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
+
+
+def validate_threeDSAuthorization1_request(request):
+    invalid_fields = []
+
+    if request.operator_id is None or not re.search(get_operator_id_Reg_Ex(), request.operator_id):
+        invalid_fields.append(Constants.getOperatorIdName())
+
+    if request.three_DS_trans_id is None:
+        invalid_fields.append(Constants.getThreeDSTransIdName())
+
+    if request.three_DS_Mtd_compl_ind is None:
+        invalid_fields.append(Constants.getThreeDSMtdComplIndName())
+
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
+
+
+def validate_threeDSAuthorization2_request(request):
+    invalid_fields = []
+
+    if request.operator_id is None or not re.search(get_operator_id_Reg_Ex(), request.operator_id):
+        invalid_fields.append(Constants.getOperatorIdName())
+
+    if request.three_DS_trans_id is None:
+        invalid_fields.append(Constants.getThreeDSTransIdName())
+
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
 
 
 def validate_authorize(request):
+    invalid_fields = []
     if not isinstance(request, AuthorizationRequest):
         raise VPOSException("invalid request type")
 
-    _validate_common_fields(request)
+    _validate_common_fields(request, invalid_fields)
 
     if request.pan is None or not re.search(get_pan_Reg_Ex(), request.pan):
-        raise VPOSException("invalid pan")
+        invalid_fields.append(Constants.getPanName())
 
     if request.exp_date is None or not re.search(get_exp_date_Reg_Ex(), request.exp_date):
-        raise VPOSException("invalid exp date")
+        invalid_fields.append(Constants.getExpDateName())
 
     if request.cvv2 is not None and not re.search(get_cvv2_Reg_Ex(),
                                                   request.cvv2):
-        raise VPOSException("invalid cvv2")
+        invalid_fields.append(Constants.getCvv2Name())
 
     if request.accounting_mode is None or not re.search(get_accounting_mode_Reg_Ex(),
                                                         request.accounting_mode):
-        raise VPOSException("invalid accounting mode")
+        invalid_fields.append(Constants.getAccountingModeName())
 
     if request.amount is None or not re.search(get_amount_Reg_Ex(),
                                                         request.amount):
-        raise VPOSException("invalid amount")
+        invalid_fields.append(Constants.getAmountName())
 
-    _validate_currency_and_exponent(request)
+    _validate_currency_and_exponent(request, invalid_fields)
 
     if request.network is None or not re.search(get_network_Reg_Ex(), request.network):
-        raise VPOSException("invalid network ")
+        invalid_fields.append(Constants.getNetworkName())
 
     if request.email_ch is not None and not re.search(get_email_ch_Reg_Ex(),
                                              request.email_ch):
-        raise VPOSException("invalid email")
+        invalid_fields.append(Constants.getEmailChName())
 
     if request.user_id is not None and not re.search(get_user_id_Reg_Ex(),
                                              request.user_id):
-        raise VPOSException("invalid user id")
+        invalid_fields.append(Constants.getUserIdName())
 
     if request.acquirer is not None and not re.search(get_acquirer_Reg_Ex(),
                                              request.acquirer):
-        raise VPOSException("invalid acquirer")
+        invalid_fields.append(Constants.getAcquirerName())
 
     if request.ip_address is not None and not re.search(get_ip_address_Reg_Ex(),
                                              request.ip_address):
-        raise VPOSException("invalid ip address")
+        invalid_fields.append(Constants.getIpAddressName())
 
     if request.usr_auth_flag is not None and not re.search(get_usr_auth_flag_Reg_Ex(),
                                              request.usr_auth_flag):
-        raise VPOSException("invalid usr auth flag")
+        invalid_fields.append(Constants.getUsrAuthFlagName())
 
     if request.op_descr is not None and not re.search(get_op_descr_Reg_Ex(),
                                              request.op_descr):
-        raise VPOSException("invalid op descr")
+        invalid_fields.append(Constants.getOpDescrName())
 
     if request.anti_fraud is not None and not re.search(get_anti_fraud_Reg_Ex(),
                                              request.anti_fraud):
-        raise VPOSException("invalid anti_fraud")
+        invalid_fields.append(Constants.getAntiFraudName())
 
     if request.product_ref is not None and not re.search(get_product_ref_Reg_Ex(),
                                              request.product_ref):
-        raise VPOSException("invalid product Ref")
+        invalid_fields.append(Constants.getProductRefName())
 
     if request.name is not None and not re.search(get_name_Reg_Ex(),
                                              request.name):
-        raise VPOSException("invalid name")
+        invalid_fields.append(Constants.getNameName())
 
     if request.surname is not None and not re.search(get_surname_Reg_Ex(),
                                              request.surname):
-        raise VPOSException("invalid surname")
+        invalid_fields.append(Constants.getSurnameName())
 
     if request.tax_id is not None and not re.search(get_tax_id_Reg_Ex(),
                                              request.tax_id):
-        raise VPOSException("invalid tax id")
+        invalid_fields.append(Constants.getTaxIdName())
+
+    if len(invalid_fields) > 0:
+        raise VPOSException("Invalid or missing config params: " + str(invalid_fields))

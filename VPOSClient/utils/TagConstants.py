@@ -206,6 +206,18 @@ def getCloseOrderTag():
     return 'CloseOrder'
 
 
+def getThreeDSAuthorizationRequest0Tag():
+    return 'ThreeDSAuthorizationRequest0'
+
+
+def getThreeDSAuthorizationRequest1Tag():
+    return 'ThreeDSAuthorizationRequest1'
+
+
+def getThreeDSAuthorizationRequest2Tag():
+    return 'ThreeDSAuthorizationRequest2'
+
+
 def getAuthorization3DSRequestTag():
     return 'AuthorizationRequest'
 
@@ -247,11 +259,12 @@ def getCprofTag():
 
 
 def getThreeDSMtdNotifUrl():
-    return'ThreeDSMtdNotifUrl'
+    return 'ThreeDSMtdNotifUrl'
 
 
 def getChallengeWinSizeTag():
     return 'ChallengeWinSize'
+
 
 def getParesTag():
     return 'PaRes'
@@ -329,6 +342,10 @@ def getThreeDSTransactionIDTag():
     return 'ThreeDSTransId'
 
 
+def getThreeDSMtdComplIndTag():
+    return 'ThreeDSMtdComplInd'
+
+
 def getACSUrlTag():
     return 'ACSUrl'
 
@@ -383,4 +400,3 @@ def getPanAliasDataTag():
 
 def getAuthorizationRequestTag():
     return 'AuthorizationRequest'
-

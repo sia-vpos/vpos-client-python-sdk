@@ -40,6 +40,26 @@ class ThreeDSAuthorize0Response:
         self.three_DS_Method = None
         self.three_DS_Challenge = None
         self.authorization = None
+        self.pan_alias_data = None
+
+
+class ThreeDSAuthorize1Response:
+    def __init__(self):
+        # Timestamp Result
+        self.timestamp = None
+        self.result = None
+        self.three_DS_Challenge = None
+        self.authorization = None
+        self.pan_alias_data=None
+
+
+class ThreeDSAuthorize2Response:
+    def __init__(self):
+        # Timestamp Result
+        self.timestamp = None
+        self.result = None
+        self.pan_alias_data = None
+        self.authorization = None
 
 
 class Authorization:
