@@ -126,6 +126,10 @@ def getEmailCHTag():
     return "EmailCH"
 
 
+def getNameCHTag():
+    return "NameCH"
+
+
 def getUseridTag():
     return "Userid"
 
@@ -251,7 +255,7 @@ def getThreeDSMtdTag():
 
 
 def getNotifUrLTag():
-    return 'NotifUrlTag'
+    return 'NotifUrl'
 
 
 def getCprofTag():
@@ -330,8 +334,16 @@ def getPanTailTag():
     return 'PanTail'
 
 
+def getPanAliasTag():
+    return 'PanAlias'
+
+
 def getPanExpiryDateTag():
     return 'PanExpiryDate'
+
+
+def getPanAliasTailTag():
+    return 'PanAliasTail'
 
 
 def getPaymentTypePPTag():
@@ -347,7 +359,7 @@ def getThreeDSMtdComplIndTag():
 
 
 def getACSUrlTag():
-    return 'ACSUrl'
+    return 'URLAcs'
 
 
 def getThreeDSChallengeTag():

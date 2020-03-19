@@ -122,6 +122,10 @@ def getThreeDSDataName():
     return 'THREEDSDATA'
 
 
+def getNameCHName():
+    return 'NAMECH'
+
+
 def getNotifUrl():
     return 'NOTIFURL'
 

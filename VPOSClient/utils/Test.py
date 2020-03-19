@@ -6,17 +6,18 @@ from VPOSClient.utils import Utils
 from VPOSClient.utils.RequestBuilderForTest import *
 from VPOSClient.utils.Utils import gen_order_id
 
-shop_id = '129281292800109'
-redirect_key = "fU-9et-s-Sj8W---E8uhUDu9fEzqr8hH3L95s48r9nq-cq3cBXbp-tZsvGQU--t-nqmtaW-7x-7-C2PdcuFdbHuShQ-pYVWnr-4-"
-apiResultKey = 'E-vmE-GHXmx73-Lfg24LztZ-7-yCyVsKn4QXphL5qzf-Kr-Cf-JWpZwZgaZRA5dR9V677xL4uCbc-Ce--8h2-tdrSu--QKjF-nZh'
-orderId = '0oiujh6rd3tbhberwwww3g4ui574'
+shop_id = '129289999900002'
+redirect_key = "au-PA-B2AAHsQSG-UuaVNcHFpBk3GJBNWqR3--Tyf-Fa-wav--ySqz9f24-yvP-RvbMQx-VYz9jVDNe-uMwTSt3-tvPukbJTTt-U"
+apiResultKey = 'hSAc7sg-z-vZ-296FuwwUaqHmzQ-eQ-E--2pXV-mEGh6YQtBdDK-NH9KeCyQrtBtmwFv-m6kEUtn27-6ATfkB-x2Dy3F4G-9t4sp'
+orderId = '0oiujh6rrwwww3g4ui574'
 operatorId = 'Giammaicol'
-pan = '5342230500001234'
+pan = '4598250000000027'
 expDate = '2112'
 amount = '100'
 currency = '978'
 accountingMode = 'D'
 network = '02'
+notifUrl = "https://atpostest.ssb.it/atpos/apibo/en/3ds-notification.html"
 urlBack = "http://localhost:8080/payment-gateway/vpos/tokenize"
 urlDone = "http://localhost:8080/payment-gateway/vpos/tokenize"
 urlMs = "https://te.t-frutta.eu/TImooneyWS/app_api/v10/payment/cardData?consumerId=3b350c34-d923-4552-91bf-67bc4f99da92"
@@ -34,7 +35,9 @@ client = VPosClient(config)
 
 #print(client.buildHTMLRedirectFragment(build_get_html_payment_Request(shop_id, urlBack, urlDone, urlMs, amount, currency, "2", gen_order_id(),accountingMode, "I")))
 
-#print(client.getOrderStatus(OrderStatusRequest("12345676912345649849", operatorId)))
+print(client.threeDSAuthorize0(build_start_3DS_Auth_Request(orderId, operatorId, pan, expDate, network, amount, currency, accountingMode, notifUrl)).__dict__)
+#print(client.threeDSAuthorize1((build_threeDS_authorize1(operatorId, "d1e69d82-9439-4b40-b6b9-9c5d13cd1802"))))
+#print(client.getOrderStatus(OrderStatusRequest("12345676912345649719", operatorId)))
 #client.capture(build_confirm_transaction("8032112928AT1gx2zgaykxk74", amount, currency, "15816791805478866964400948992201416592057357867885", shop_id, operatorId))
 #client.refund(build_refund_request("8032112928AT1gx2zgaykxk74", "15816791805478866964400948992201416592057357867885", amount, currency, shop_id, operatorId))
-client.authorize(build_authorize())
+#client.authorize(build_authorize())

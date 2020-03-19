@@ -1,3 +1,6 @@
+import json
+
+
 class PaymentInfo:
     def __init__(self, url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
                  authorMode):
@@ -67,6 +70,7 @@ class ThreeDSAuthorization0Request:
         self.three_ds_mtd_notify_url = None
         self.challenge_win_size = None
         self.merchant_key = None
+        self.options = None
 
 
 class ThreeDSAuthorization1Request:
@@ -96,53 +100,73 @@ class CaptureRequest:
 
 
 class Data3DSJsonDto:
-    def __init__(self):
-        self.three_DS_requestor_challenge_ind = None
-        self.addr_match = None
-        self.ch_acc_age_ind = None
-        self.ch_acc_change = None
-        self.ch_acc_change_ind = None
-        self.ch_acc_date = None
-        self.ch_acc_pw_change = None
-        self.ch_acc_pw_change_ind = None
-        self.nb_purchase_account = None
-        self.txn_activity_day = None
-        self.txn_activity_year = None
-        self.ship_address_usage = None
-        self.ship_address_usage_ind = None
-        self.ship_name_indicator = None
-        self.acct_iD = None
-        self.bill_addr_city = None
-        self.bill_addr_country = None
-        self.bill_addr_line1 = None
-        self.bill_addr_line2 = None
-        self.bill_addr_line3 = None
-        self.bill_addr_post_code = None
-        self.bill_addr_state = None
-        self.home_phone = None
-        self.mobile_phone = None
-        self.ship_addr_city = None
-        self.ship_addr_country = None
-        self.ship_addr_line1 = None
-        self.ship_addr_line2 = None
-        self.ship_addr_line3 = None
-        self.ship_addr_postCode = None
-        self.ship_addr_state = None
-        self.work_phone = None
-        self.delivery_email_address = None
-        self.delivery_time_frame = None
-        self.pre_order_date = None
-        self.pre_order_purchase_ind = None
+    def __init__(self, data3ds):
+        data3ds_dict = dict(data3ds)
+        self.browserAcceptHeader = data3ds_dict.get("browserAcceptHeader")
+        self.browserIP = data3ds_dict.get("browserIP")
+        self.browserJavaEnabled = data3ds_dict.get("browserJavaEnabled")
+        self.browserLanguage = data3ds_dict.get("browserLanguage")
+        self.browserColorDepth = data3ds_dict.get("browserColorDepth")
+        self.browserScreenHeight = data3ds_dict.get("browserScreenHeight")
+        self.browserScreenWidth = data3ds_dict.get("browserScreenWidth")
+        self.browserTZ = data3ds_dict.get("browserTZ")
+        self.browserUserAgent = data3ds_dict.get("browserUserAgent")
+        self.threeDSRequestorChallengeInd = data3ds_dict.get("threeDSRequestorChallengeInd")
+        self.addrMatch = data3ds_dict.get("addrMatch")
+        self.chAccAgeInd = data3ds_dict.get("chAccAgeInd")
+        self.chAccChange = data3ds_dict.get("chAccChange")
+        self.chAccchangeInd = data3ds_dict.get("chAccchangeInd")
+        self.chAccDate = data3ds_dict.get("chAccDate")
+        self.chAccPwChange = data3ds_dict.get("chAccPwChange")
+        self.chAccPwChangeInd = data3ds_dict.get("chAccPwChangeInd")
+        self.nbPurchaseAccount = data3ds_dict.get("nbPurchaseAccount")
+        self.txnActivityDay = data3ds_dict.get("txnActivityDay")
+        self.txnActivityYear = data3ds_dict.get("txnActivityYear")
+        self.shipAddressUsage = data3ds_dict.get("shipAddressUsage")
+        self.shipAddressUsageInd = data3ds_dict.get("shipAddressUsageInd")
+        self.shipNameIndicator = data3ds_dict.get("shipNameIndicator")
+        self.acctID = data3ds_dict.get("acctID")
+        self.billAddrCity = data3ds_dict.get("billAddrCity")
+        self.billAddrCountry = data3ds_dict.get("billAddrCountry")
+        self.billAddrLine1 = data3ds_dict.get("billAddrLine1")
+        self.billAddrLine2 = data3ds_dict.get("billAddrLine2")
+        self.billAddrLine3 = data3ds_dict.get("billAddrLine3")
+        self.billAddrPostCode = data3ds_dict.get("billAddrPostCode")
+        self.billAddrState = data3ds_dict.get("billAddrState")
+        self.homePhone = data3ds_dict.get("homePhone")
+        self.mobilePhone = data3ds_dict.get("mobilePhone")
+        self.shipAddrCity = data3ds_dict.get("shipAddrCity")
+        self.shipAddrCountry = data3ds_dict.get("shipAddrCountry")
+        self.shipAddrLine1 = data3ds_dict.get("shipAddrLine1")
+        self.shipAddrLine2 = data3ds_dict.get("shipAddrLine2")
+        self.shipAddrLine3 = data3ds_dict.get("shipAddrLine3")
+        self.shipAddrPostCode = data3ds_dict.get("shipAddrPostCode")
+        self.shipAddrState = data3ds_dict.get("shipAddrState")
+        self.workPhone = data3ds_dict.get("workPhone")
+        self.deliveryEmailAddress = data3ds_dict.get("deliveryEmailAddress")
+        self.deliveryTimeFrame = data3ds_dict.get("deliveryTimeFrame")
+        self.preOrderDate = data3ds_dict.get("preOrderDate")
+        self.preOrderPurchaseInd = data3ds_dict.get("preOrderPurchaseInd")
+
+    @classmethod
+    def from_json(cls, json_string):
+        json_dict = json.loads(json_string)
+        return cls(json_dict)
 
     def toJson(self):
         to_remove = []
+        sb = "{"
         json_Dict = self.__dict__
         for attribute_key in json_Dict.keys():
-            if json_Dict.get(attribute_key) is None:
-                to_remove.append(attribute_key)
-        for attribute_key in to_remove:
-            json_Dict.pop(attribute_key)
-        return str(json_Dict)
+            if json_Dict.get(attribute_key) is not None:
+                sb = sb + "\""
+                sb = sb + attribute_key
+                sb = sb + "\":\""
+                sb = sb + json_Dict.get(attribute_key)
+                sb = sb + "\","
+        sb = sb[:-1]
+        sb = sb + "}"
+        return sb
 
 
 class OrderStatusRequest:

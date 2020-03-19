@@ -240,6 +240,8 @@ class ThreeDSAuthorization0RequestXML(Request):
         # OPTIONAL CHILD
         Utils.addOptionalChild(authorization3DS, TagConstants.getCVV2Tag(), self._cvv2)
         Utils.addOptionalChild(authorization3DS, TagConstants.getEmailCHTag(), self._email_ch)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getNameCHTag(), self._name_ch)
+
         Utils.addOptionalChild(authorization3DS, TagConstants.getUseridTag(), self._user_id)
         Utils.addOptionalChild(authorization3DS, TagConstants.getAcquirerTag(), self._acquirer)
         Utils.addOptionalChild(authorization3DS, TagConstants.getIpAddressTag(), self._ip_address)
@@ -254,7 +256,7 @@ class ThreeDSAuthorization0RequestXML(Request):
 
         Utils.addOptionalChild(authorization3DS, TagConstants.getTaxIDTag(), self._tax_id)
         Utils.addOptionalChild(authorization3DS, TagConstants.getCreatePanAliasTag(), self._create_pan_alias)
-        Utils.addOptionalChild(authorization3DS, TagConstants.getThreeDSDataTag(), Utils.parse_url(AES.AES_encrypt(self._three_ds_data.toJson(), api_result_key)))
+        Utils.addOptionalChild(authorization3DS, TagConstants.getThreeDSDataTag(), Utils.parse_url(AES.AES_encrypt(self._three_ds_data, api_result_key)))
         Utils.addOptionalChild(authorization3DS, TagConstants.getNotifUrLTag(), self._notify_url)
         Utils.addOptionalChild(authorization3DS, TagConstants.getCprofTag(), self._c_prof)
         Utils.addOptionalChild(authorization3DS, TagConstants.getThreeDSMtdNotifUrl(), self._three_ds_mtd_notify_url)
@@ -295,7 +297,8 @@ class ThreeDSAuthorization0RequestXML(Request):
         macString = Utils.appendField(macString, Constants.getSurnameName(), self._surname)
         macString = Utils.appendField(macString, Constants.getTaxIdName(), self._tax_id)
 
-        macString = Utils.appendField(macString, Constants.getThreeDSDataName(), AES.AES_encrypt(self._three_ds_data.toJson(), api_result_key))
+        macString = Utils.appendField(macString, Constants.getThreeDSDataName(), AES.AES_encrypt(self._three_ds_data, api_result_key))
+        macString = Utils.appendField(macString, Constants.getNameCHName(), self._name_ch)
         macString = Utils.appendField(macString, Constants.getNotifUrl(), self._notify_url)
         macString = Utils.appendField(macString, Constants.getThreeDSMtdNotifUrlName(), self._three_ds_mtd_notify_url)
         macString = Utils.appendField(macString, Constants.getChallengeWinSizeName(), self._challenge_win_size)
@@ -304,9 +307,8 @@ class ThreeDSAuthorization0RequestXML(Request):
 
 class ThreeDSAuthorization1RequestXML(Request):
     def __init__(self, threeDS1_request, shop_id):
-        super().__init__(shop_id, threeDS1_request.operator_id, threeDS1_request.options)
+        super().__init__(shop_id, threeDS1_request.operator_id, None)
         self._operation = 'THREEDSAUTHORIZATION1'
-        self._order_id = threeDS1_request.order_id
         self._three_DS_trans_id = threeDS1_request.three_DS_trans_id
         self._three_DS_Mtd_compl_ind = threeDS1_request.three_DS_Mtd_compl_ind
 
@@ -428,7 +430,7 @@ class PaymentRequest(Request):
         map[Constants.getAntiFraudName()] = self._anti_fraud
 
         if self._data_3DS_json is not None:
-            map[Constants.get3DSJsonDataName()] = AES.AES_encrypt(self._data_3DS_json.toJson(), api_result_key)
+            map[Constants.get3DSJsonDataName()] = Utils.parse_url(AES.AES_encrypt(self._data_3DS_json.toJson(), api_result_key))
 
 
         map[Constants.getUrlBackName()] = self._url_back

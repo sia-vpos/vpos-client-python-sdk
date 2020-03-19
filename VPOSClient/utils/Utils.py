@@ -102,6 +102,40 @@ def getOperationStringForMac(operationXml):
     return append_optional_field_for_verification(stringForMac, operationXml.find(TagConstants.getOpDescrTag()))
 
 
+def getChallengeStringForMac(challengeXml):
+    stringForMac = challengeXml.find(TagConstants.getThreeDSTransactionIDTag()).text
+    stringForMac = append_field_for_verification(stringForMac,
+                                                 challengeXml.find(TagConstants.getCreqTag()).text)
+    stringForMac = append_field_for_verification(stringForMac,
+                                                 challengeXml.find(TagConstants.getACSUrlTag()).text)
+
+    return stringForMac
+
+
+def getThreeDSMtdStringForMac(three_ds_mtd_xml):
+    stringForMac = three_ds_mtd_xml.find(TagConstants.getThreeDSTransactionIDTag()).text
+    stringForMac = append_field_for_verification(stringForMac,
+                                                 three_ds_mtd_xml.find(TagConstants.getThreeDSMtdDataTag()).text)
+    stringForMac = append_field_for_verification(stringForMac,
+                                                 three_ds_mtd_xml.find(TagConstants.getThreeDSMtdUrlTag()).text)
+    return stringForMac
+
+
+def getPanAliasDataStringForMac(pan_alias_xml):
+    tail = pan_alias_xml.find(TagConstants.getPanAliasRevTag())
+
+    if tail is None:
+        stringForMac = "&"
+    else:
+        stringForMac = tail.text
+    stringForMac = append_field_for_verification(stringForMac, pan_alias_xml.find(TagConstants.getPanAliasTag()).text)
+    stringForMac = append_field_for_verification(stringForMac,
+                                                 pan_alias_xml.find(TagConstants.getPanExpiryDateTag()).text)
+    stringForMac = append_field_for_verification(stringForMac,
+                                                 pan_alias_xml.find(TagConstants.getPanAliasTailTag()).text)
+    return stringForMac
+
+
 def getAuthorizationStringForMac(authorizationXml):
     stringForMac = authorizationXml.find(TagConstants.getAuthorizationTypeTag()).text
     stringForMac = append_field_for_verification(stringForMac,

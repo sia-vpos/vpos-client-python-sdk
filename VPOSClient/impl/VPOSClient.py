@@ -41,6 +41,7 @@ class VPosClient:
         authorization = OnlineAuthorizationRequestXml(authorization_request, self._shop_id)
         request_xml = authorization.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
+        self._verify_mac_response(response)
         return map_authorize_response(response)
 
     def threeDSAuthorize0(self, threeDS0_request):
@@ -48,6 +49,7 @@ class VPosClient:
         three_ds0_auth = ThreeDSAuthorization0RequestXML(threeDS0_request, self._shop_id)
         request_xml = three_ds0_auth.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
+        self._verify_mac_response(response)
         return map_three_ds_authorize0(response)
 
     def threeDSAuthorize1(self, threeDS1_request):
@@ -55,6 +57,7 @@ class VPosClient:
         three_ds1_auth = ThreeDSAuthorization1RequestXML(threeDS1_request, self._shop_id)
         request_xml = three_ds1_auth.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
+        self._verify_mac_response(response)
         return map_three_ds_authorize1(response)
 
     def threeDSAuthorize2(self, threeDS2_request):
@@ -62,6 +65,7 @@ class VPosClient:
         three_ds2_auth = ThreeDSAuthorization2RequestXML(threeDS2_request, self._shop_id)
         request_xml = three_ds2_auth.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
+        self._verify_mac_response(response)
         return map_three_ds_authorize2(response)
 
     def capture(self, capture_request):
@@ -74,7 +78,7 @@ class VPosClient:
         capture = CaptureRequestXml(capture_request, self._shop_id)
         requestXml = capture.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(requestXml)
-        self.verifyMacResponse(response)
+        self._verify_mac_response(response)
         return map_operation_response(response)
 
     def getOrderStatus(self, order_status_request):
@@ -82,7 +86,7 @@ class VPosClient:
         order_status = OrderStatusRequestXml(order_status_request, self._shop_id)
         request_xml = order_status.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
-        self.verifyMacResponse(response)
+        self._verify_mac_response(response)
         return map_order_status_response(response)
 
     def refund(self, refund_request):
@@ -94,10 +98,10 @@ class VPosClient:
         refund = RefundRequestXml(refund_request, self._shop_id)
         request_xml = refund.build_request(self._api_result_key, self._digest_mode)
         response = self._execute_call(request_xml)
-        self.verifyMacResponse(response)
+        self._verify_mac_response(response)
         return map_operation_response(response)
 
-    def verifyMacResponse(self, response):
+    def _verify_mac_response(self, response):
         response = Utils.stringToXML(response)
         receivedMac = response.find(Constants.getMacName())
         calculatedMac = Encoder.getMac(Utils.geResultStringForMac(response), self._api_result_key, self._digest_mode)
@@ -123,6 +127,33 @@ class VPosClient:
             if (not authorization_received_mac.text == "NULL") & (
                     not Encoder.compareDigest(authorization_received_mac.text, authorization_calculated_mac)):
                 raise VPOSException("Authorization MAC is not valid")
+
+        if (data is not None) & (data.find(TagConstants.getThreeDSChallengeTag()) is not None):
+            challenge_calculated_mac = Encoder.getMac(
+                Utils.getChallengeStringForMac(data.find(TagConstants.getThreeDSChallengeTag())), self._api_result_key,
+                self._digest_mode)
+            challenge_received_mac = data.find(TagConstants.getThreeDSChallengeTag()).find(TagConstants.getMACTag())
+            if (not challenge_received_mac.text == "NULL") & (
+                    not Encoder.compareDigest(challenge_received_mac.text, challenge_calculated_mac)):
+                raise VPOSException("Challenge MAC is not valid")
+
+        if (data is not None) & (data.find(TagConstants.getThreeDSMtdTag()) is not None):
+            mtd_calculated_mac = Encoder.getMac(
+                Utils.getThreeDSMtdStringForMac(data.find(TagConstants.getThreeDSMtdTag())), self._api_result_key,
+                self._digest_mode)
+            mtd_received_mac = data.find(TagConstants.getThreeDSMtdTag()).find(TagConstants.getMACTag())
+            if (not mtd_received_mac.text == "NULL") & (
+                    not Encoder.compareDigest(mtd_received_mac.text, mtd_calculated_mac)):
+                raise VPOSException("ThreeDS Method MAC is not valid")
+
+        if (data is not None) & (data.find(TagConstants.getPanAliasDataTag()) is not None):
+            panAlias_calculated_mac = Encoder.getMac(
+                Utils.getPanAliasDataStringForMac(data.find(TagConstants.getPanAliasDataTag())), self._api_result_key,
+                self._digest_mode)
+            panAlias_received_mac = data.find(TagConstants.getPanAliasDataTag()).find(TagConstants.getMACTag())
+            if (not panAlias_received_mac.text == "NULL") & (
+                    not Encoder.compareDigest(panAlias_received_mac.text, panAlias_calculated_mac)):
+                raise VPOSException("Pan Alias MAC is not valid")
 
     def verifyMAC(self, url):
         """
