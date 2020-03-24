@@ -48,9 +48,9 @@ def map_three_ds_authorize0(response):
     data = response_xml.find(TagConstants.getDataTag())
 
     if (data is not None) & (data.find(TagConstants.getAuthorizationTag()) is not None):
-        operation_xml = data.find(TagConstants.getOperationTag())
-        operation = Operation(operation_xml)
-        response_dto.operation = operation
+        authorization_xml = data.find(TagConstants.getAuthorizationTag())
+        authorization = Authorization(authorization_xml)
+        response_dto.authorization = authorization
 
     if (data is not None) & (data.find(TagConstants.getPanAliasDataTag()) is not None):
         pan_alias_xml = PanAliasData(data.find(TagConstants.getPanAliasDataTag()))

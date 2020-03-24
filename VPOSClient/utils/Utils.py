@@ -58,7 +58,6 @@ def getHtml(urlApos, parametersMap):
 
 def _generateHtmlParams(parametersMap):
     inputPattern = "<input type=\"hidden\" name=\"KEY\" value=\"VALUE\">"
-    parametersMap = dict(parametersMap)
     stringForHtml = str()
     for key in parametersMap.keys():
         if parametersMap.get(key) is not None:
@@ -141,7 +140,12 @@ def getAuthorizationStringForMac(authorizationXml):
     stringForMac = append_field_for_verification(stringForMac,
                                                  authorizationXml.find(TagConstants.getTransactionIDTag()).text)
     stringForMac = append_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getNetworkTag()).text)
-    stringForMac = append_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getOrderIDTag()).text)
+
+    if authorizationXml.find(TagConstants.getOrderIDTag()) is not None:
+        stringForMac = append_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getOrderIDTag()).text)
+    else:
+        stringForMac = append_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getOrderIdTag()).text)
+
     stringForMac = append_field_for_verification(stringForMac,
                                                  authorizationXml.find(TagConstants.getTransactionAmountTag()).text)
     stringForMac = append_field_for_verification(stringForMac,
@@ -186,8 +190,7 @@ def get_millis():
 
 def gen_order_id():
     x = str(get_millis())
-    print(len(x))
-    for i in range(0, 37):
+    for i in range(0, 30):
         x = x + str(random.randint(0, 9))
     return x
 

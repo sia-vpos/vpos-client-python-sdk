@@ -115,7 +115,7 @@ class Data3DSJsonDto:
         self.addrMatch = data3ds_dict.get("addrMatch")
         self.chAccAgeInd = data3ds_dict.get("chAccAgeInd")
         self.chAccChange = data3ds_dict.get("chAccChange")
-        self.chAccchangeInd = data3ds_dict.get("chAccchangeInd")
+        self.chAccChangeInd = data3ds_dict.get("chAccChangeInd")
         self.chAccDate = data3ds_dict.get("chAccDate")
         self.chAccPwChange = data3ds_dict.get("chAccPwChange")
         self.chAccPwChangeInd = data3ds_dict.get("chAccPwChangeInd")
@@ -147,6 +147,8 @@ class Data3DSJsonDto:
         self.deliveryTimeFrame = data3ds_dict.get("deliveryTimeFrame")
         self.preOrderDate = data3ds_dict.get("preOrderDate")
         self.preOrderPurchaseInd = data3ds_dict.get("preOrderPurchaseInd")
+        self.reorderItemsInd = data3ds_dict.get("reorderItemsInd")
+        self.shipIndicator = data3ds_dict.get("shipIndicator")
 
     @classmethod
     def from_json(cls, json_string):
@@ -154,7 +156,6 @@ class Data3DSJsonDto:
         return cls(json_dict)
 
     def toJson(self):
-        to_remove = []
         sb = "{"
         json_Dict = self.__dict__
         for attribute_key in json_Dict.keys():

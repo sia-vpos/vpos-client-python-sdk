@@ -90,6 +90,10 @@ def getOrderIDTag():
     return "OrderID"
 
 
+def getOrderIdTag():
+    return "OrderId"
+
+
 def getPanTag():
     return "Pan"
 

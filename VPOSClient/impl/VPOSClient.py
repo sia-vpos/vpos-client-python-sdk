@@ -34,9 +34,13 @@ class VPosClient:
         """
         validate_redirect_request(paymentInfo)
         paymentRequest = PaymentRequest(paymentInfo, self._shop_id)
-        return Utils.getHtml(self._url_redirect, paymentRequest.getParametersMap(self._start_key, self._digest_mode))
+        return Utils.getHtml(self._url_redirect, paymentRequest.getParametersMap(self._start_key, self._api_result_key, self._digest_mode))
 
     def authorize(self, authorization_request):
+        """ This operation allows to forward authorization requests to the circuits
+        :param authorization_request: authorization request object containing all the parameters to perform the operation
+        :return: response object with the operation outcome infos
+        """
         validate_authorize(authorization_request)
         authorization = OnlineAuthorizationRequestXml(authorization_request, self._shop_id)
         request_xml = authorization.build_request(self._api_result_key, self._digest_mode)
@@ -45,6 +49,11 @@ class VPosClient:
         return map_authorize_response(response)
 
     def threeDSAuthorize0(self, threeDS0_request):
+        """
+        The 3DS 2.x authorization request message permits to send authorization requests to the circuits.
+        :param threeDS0_request: authorization request object containing all the parameters to perform the operation
+        :return: response object with the operation outcome infos
+        """
         validate_threeDSAuthorization0_request(threeDS0_request)
         three_ds0_auth = ThreeDSAuthorization0RequestXML(threeDS0_request, self._shop_id)
         request_xml = three_ds0_auth.build_request(self._api_result_key, self._digest_mode)
@@ -53,6 +62,12 @@ class VPosClient:
         return map_three_ds_authorize0(response)
 
     def threeDSAuthorize1(self, threeDS1_request):
+        """
+        The 3DS 2.x authorization request message step 1 permits to forward authentication requests to the circuits once a call to the ACS 3DS method has been performed.
+        The message THREEDSAUTHORIZATION1 must arrive within 8 minutes from the time the original message THREEDSAUTHORIZATION0 is sent.
+        :param threeDS1_request: authorization request object containing all the parameters to perform the operation
+        :return: response object with the operation outcome infos
+        """
         validate_threeDSAuthorization1_request(threeDS1_request)
         three_ds1_auth = ThreeDSAuthorization1RequestXML(threeDS1_request, self._shop_id)
         request_xml = three_ds1_auth.build_request(self._api_result_key, self._digest_mode)
@@ -61,6 +76,12 @@ class VPosClient:
         return map_three_ds_authorize1(response)
 
     def threeDSAuthorize2(self, threeDS2_request):
+        """
+        The 3DS 2.x authorization request message step 2 permits to forward authentication requests to the circuits once an user authentication challenge has been performed.
+        The message THREEDSAUTHORIZATION2 must arrive within 8 minutes from the time the original message THREEDSAUTHORIZATION0 or THREEDSAUTHORIZATION1 are sent.
+        :param threeDS2_request: authorization request object containing all the parameters to perform the operation
+        :return: response object with the operation outcome infos
+        """
         validate_threeDSAuthorization2_request(threeDS2_request)
         three_ds2_auth = ThreeDSAuthorization2RequestXML(threeDS2_request, self._shop_id)
         request_xml = three_ds2_auth.build_request(self._api_result_key, self._digest_mode)
@@ -69,10 +90,10 @@ class VPosClient:
         return map_three_ds_authorize2(response)
 
     def capture(self, capture_request):
-        """
-        :param capture_request: data transfer object containing all the required parameters to perform a
-        payment confirmation
-        :return:
+        """A booking request transaction permits the SIA VPOS system to forward to the competent acquirer the request for the booking of
+        an authorization previously granted with a deferred booking.
+        :param capture_request: object containing all the required parameters to perform a payment confirmation
+        :return: object with the operation outcome infos
         """
         validate_capture_request(capture_request)
         capture = CaptureRequestXml(capture_request, self._shop_id)
@@ -82,6 +103,11 @@ class VPosClient:
         return map_operation_response(response)
 
     def getOrderStatus(self, order_status_request):
+        """
+        This request returns the current status of an order, including all the related authorization transactions
+        :param order_status_request: object containing all the required parameters to perform an order status request
+        :return: object with the operation outcome infos
+        """
         validate_order_status_request(order_status_request)
         order_status = OrderStatusRequestXml(order_status_request, self._shop_id)
         request_xml = order_status.build_request(self._api_result_key, self._digest_mode)
@@ -90,9 +116,9 @@ class VPosClient:
         return map_order_status_response(response)
 
     def refund(self, refund_request):
-        """
-        :param refund_request: data transfer object containing all the required parameters to perform a payment refund
-        :return:
+        """ Refund request
+        :param refund_request: request object containing all the required parameters to perform a payment refund
+        :return: response object with the operation outcome infos
         """
         validate_refund_payment_request(refund_request)
         refund = RefundRequestXml(refund_request, self._shop_id)
@@ -101,7 +127,23 @@ class VPosClient:
         self._verify_mac_response(response)
         return map_operation_response(response)
 
+    def verifyMAC(self, url):
+        """
+        Validate the result of a payment initiation verifying the integrity of the data contained in URMLS/URLDONE
+        :param url:  url generated from SIA VPOS redirect
+        """
+        parsed = urlparse.parse_qs(urlparse.urlparse(url).query)
+        receivedMac = parsed.get(Constants.getMacName())
+        calculated_mac = Encoder.getMac(map_for_verify_url_mac(parsed), self._api_result_key, self._digest_mode)
+        if not Encoder.compareDigest(calculated_mac, receivedMac):
+            return False
+        else:
+            return True
+
     def _verify_mac_response(self, response):
+        """ This method is used to verify the integrity of the VPOS response.
+        :param response: The VPOS response
+        """
         response = Utils.stringToXML(response)
         receivedMac = response.find(Constants.getMacName())
         calculatedMac = Encoder.getMac(Utils.geResultStringForMac(response), self._api_result_key, self._digest_mode)
@@ -154,19 +196,6 @@ class VPosClient:
             if (not panAlias_received_mac.text == "NULL") & (
                     not Encoder.compareDigest(panAlias_received_mac.text, panAlias_calculated_mac)):
                 raise VPOSException("Pan Alias MAC is not valid")
-
-    def verifyMAC(self, url):
-        """
-        Validate the result of a payment initiation verifying the integrity of the data contained in URMLS/URLDONE
-        :param url:  url generated from SIA VPOS redirect
-        """
-        parsed = urlparse.parse_qs(urlparse.urlparse(url).query)
-        receivedMac = parsed.get(Constants.getMacName())
-        calculated_mac = Encoder.getMac(map_for_verify_url_mac(parsed), self._api_result_key, self._digest_mode)
-        if not Encoder.compareDigest(calculated_mac, receivedMac):
-            return False
-        else:
-            return True
 
     def _set_proxy(self, proxy_name, proxy_port, username=None, password=None):
         proxy = "http://" + str(proxy_name) + ":" + str(proxy_port)
