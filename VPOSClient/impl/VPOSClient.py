@@ -22,12 +22,13 @@ class VPosClient:
         self._web_api = vpos_config.api_url
         self._url_redirect = vpos_config.redirect_url
         self._shop_id = vpos_config.shop_id
+        self._proxies = None
         if (vpos_config.proxy_host is not None) & (vpos_config.proxy_port is not None):
             self._set_proxy(vpos_config.proxy_host, vpos_config.proxy_port, vpos_config.proxy_username,
                             vpos_config.proxy_password)
-        self._proxies = None
 
-    def buildHTMLRedirectFragment(self, paymentInfo):
+
+    def build_HTML_redirect_fragment(self, paymentInfo):
         """Create an HTML fragment for payment initiation.
         :param paymentInfo: data transfer object containing all the payment parameters
         :return: the HTML fragment for redirect
@@ -48,7 +49,7 @@ class VPosClient:
         self._verify_mac_response(response)
         return map_authorize_response(response)
 
-    def threeDSAuthorize0(self, threeDS0_request):
+    def threeDS_authorize0(self, threeDS0_request):
         """
         The 3DS 2.x authorization request message permits to send authorization requests to the circuits.
         :param threeDS0_request: authorization request object containing all the parameters to perform the operation
@@ -61,7 +62,7 @@ class VPosClient:
         self._verify_mac_response(response)
         return map_three_ds_authorize0(response)
 
-    def threeDSAuthorize1(self, threeDS1_request):
+    def threeDS_authorize1(self, threeDS1_request):
         """
         The 3DS 2.x authorization request message step 1 permits to forward authentication requests to the circuits once a call to the ACS 3DS method has been performed.
         The message THREEDSAUTHORIZATION1 must arrive within 8 minutes from the time the original message THREEDSAUTHORIZATION0 is sent.
@@ -75,7 +76,7 @@ class VPosClient:
         self._verify_mac_response(response)
         return map_three_ds_authorize1(response)
 
-    def threeDSAuthorize2(self, threeDS2_request):
+    def threeDS_authorize2(self, threeDS2_request):
         """
         The 3DS 2.x authorization request message step 2 permits to forward authentication requests to the circuits once an user authentication challenge has been performed.
         The message THREEDSAUTHORIZATION2 must arrive within 8 minutes from the time the original message THREEDSAUTHORIZATION0 or THREEDSAUTHORIZATION1 are sent.
@@ -102,7 +103,7 @@ class VPosClient:
         self._verify_mac_response(response)
         return map_operation_response(response)
 
-    def getOrderStatus(self, order_status_request):
+    def get_order_status(self, order_status_request):
         """
         This request returns the current status of an order, including all the related authorization transactions
         :param order_status_request: object containing all the required parameters to perform an order status request
@@ -127,7 +128,7 @@ class VPosClient:
         self._verify_mac_response(response)
         return map_operation_response(response)
 
-    def verifyMAC(self, url):
+    def verify_MAC(self, url):
         """
         Validate the result of a payment initiation verifying the integrity of the data contained in URMLS/URLDONE
         :param url:  url generated from SIA VPOS redirect

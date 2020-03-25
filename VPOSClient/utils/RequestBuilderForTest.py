@@ -77,6 +77,8 @@ def build_get_html_payment_Request(url_back, url_done, url_ms, amount, currency,
     request = PaymentInfo(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
                           authorMode)
     request.data_3DS_json = Data3DSJsonDto.from_json(data_redirect)
+    #request.options = "M"
+    
     return request
 
 

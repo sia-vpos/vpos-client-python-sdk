@@ -36,6 +36,12 @@ class PaymentInfo:
         self.anti_fraud = None
         self.lang = None
         self.shop_email = None
+        self.network = None
+        self.token = None
+        self.t_recurr = None
+        self.c_recurr = None
+        self.exp_date = None
+        self.iban= None
 
 
 class ThreeDSAuthorization0Request:

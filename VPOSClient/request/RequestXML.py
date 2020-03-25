@@ -80,32 +80,6 @@ class RefundRequestXml(Request):
         return macString
 
 
-class VerifyPaymentRequest(Request):
-    def __init__(self, original_req_ref_num, shop_id, operator_id, options=None):
-        super().__init__(shop_id, operator_id, options)
-        self._original_req_ref_num = original_req_ref_num
-        self._operation = 'VERIFY'
-
-    def build_request(self, api_result_key, digest_mode):
-        request = self.get_request_base_xml(self._operation, TagConstants.getVerifyRequestTag())
-        verifyRequest = request.find(TagConstants.getDataTag()).find(TagConstants.getVerifyRequestTag())
-        if self._options is not None:
-            Utils.addChild(verifyRequest, TagConstants.getOptionsTag(), self._options)
-        Utils.addChild(verifyRequest, TagConstants.getOriginalReqRefNumTag(), self._original_req_ref_num)
-        mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
-
-    def _string_for_mac(self):
-        macString = Constants.getOperationName() + "=" + str(self._operation)
-        macString = Utils.appendField(macString, Constants.getTimestampName(), self._timestamp)
-        macString = Utils.appendField(macString, Constants.getShopIdName(), self._shop_id)
-        macString = Utils.appendField(macString, Constants.getOperatorIdName(), self._operator_id)
-        macString = Utils.appendField(macString, Constants.getReqRefNumName(), self._reqRefNum)
-        macString = Utils.appendField(macString, Constants.getOriginalReqRefNumName(), self._original_req_ref_num)
-        macString = Utils.appendField(macString, Constants.getOptionsName(), self._options)
-        return macString
-
-
 class OrderStatusRequestXml(Request):
     def __init__(self, order_status_request, shop_id):
         super().__init__(shop_id, order_status_request.operator_id, order_status_request.options)
@@ -397,6 +371,12 @@ class PaymentRequest(Request):
         self._lang = payment_info_request.lang
         self._shop_email = payment_info_request.shop_email
         self._data_3DS_json = payment_info_request.data_3DS_json.toJson()
+        self._network = payment_info_request.network
+        self._exp_date = payment_info_request.exp_date
+        self._token = payment_info_request.token
+        self._t_recurr = payment_info_request.t_recurr
+        self._c_recurr = payment_info_request.c_recurr
+        self._iban = payment_info_request.iban
 
     def getParametersMap(self, redirect_key, api_result_key, digest_mode):
         map = OrderedDict()
@@ -453,30 +433,48 @@ class PaymentRequest(Request):
         macString = Utils.appendField(macString, Constants.getAccountingModeName(), self._accounting_mode)
         macString = Utils.appendField(macString, Constants.getAuthorModeName(), self._author_mode)
         macString = Utils.appendField(macString, Constants.getOptionsName(), self._options)
-        macString = Utils.appendField(macString, Constants.getNameName(), self._name)
-        macString = Utils.appendField(macString, Constants.getSurnameName(), self._surname)
-        macString = Utils.appendField(macString, Constants.getTaxIdName(), self._tax_id)
 
+        if self._options is not None and "B" in self._options:
+            macString = Utils.appendField(macString, Constants.getNameName(), self._name)
+            macString = Utils.appendField(macString, Constants.getSurnameName(), self._surname)
+
+        macString = Utils.appendField(macString, Constants.getTaxIdName(), self._tax_id)
         macString = Utils.appendField(macString, Constants.getLockCardName(), self._lock_card)
-        macString = Utils.appendField(macString, Constants.getCommisName(), self._commis)
-        macString = Utils.appendField(macString, Constants.getOrdDescrName(), self._ord_descr)
+
+        if self._options is not None and "F" in self._options:
+            macString = Utils.appendField(macString, Constants.getCommisName(), self._commis)
+
+        if self._options is not None and ("O" in self._options or "V" in self._options):
+            macString = Utils.appendField(macString, Constants.getOrdDescrName(), self._ord_descr)
+
         macString = Utils.appendField(macString, Constants.getVSIDName(), self._VSID)
         macString = Utils.appendField(macString, Constants.getOpDescrName(), self._op_descr)
 
-        macString = Utils.appendField(macString, Constants.getRemainingDurationName(), self._remaining_duration)
+        if self._options is not None and "D" in self._options:
+            macString = Utils.appendField(macString, Constants.getRemainingDurationName(), self._remaining_duration)
+
         macString = Utils.appendField(macString, Constants.getUserIdName(), self._userId)
         macString = Utils.appendField(macString, Constants.getBBPostepayName(), self._bb_poste_pay)
         macString = Utils.appendField(macString, Constants.getBPCardsName(), self._bp_cards)
-        macString = Utils.appendField(macString, Constants.getPhoneNumberName(), self._phone_number)
 
-        macString = Utils.appendField(macString, Constants.getCausationName(), self._causation)
-        macString = Utils.appendField(macString, Constants.getUserName(), self._user)
+        if self._network is not None and self._network.equals("91"):
+            macString = Utils.appendField(macString, Constants.getPhoneNumberName(), self._phone_number)
+            macString = Utils.appendField(macString, Constants.getCausationName(), self._causation)
+            macString = Utils.appendField(macString, Constants.getUserName(), self._user)
+
         macString = Utils.appendField(macString, Constants.getProductRefName(), self._product_ref)
         macString = Utils.appendField(macString, Constants.getAntiFraudName(), self._anti_fraud)
-        # TO DO
+
         if self._data_3DS_json is not None:
             macString = Utils.appendField(macString, Constants.get3DSJsonDataName(),
                                           AES.AES_encrypt(self._data_3DS_json, apiKey))
+
+        macString = Utils.appendField(macString, Constants.getTrecurrName(), self._t_recurr)
+        macString = Utils.appendField(macString, Constants.getCrecurrName(), self._c_recurr)
+        macString = Utils.appendField(macString, Constants.getTokenName(), self._token)
+        macString = Utils.appendField(macString, Constants.getExpDateName(), self._exp_date)
+        macString = Utils.appendField(macString, Constants.getNetworkName(), self._network)
+        macString = Utils.appendField(macString, Constants.getIBANName(), self._iban)
         return macString
 
 

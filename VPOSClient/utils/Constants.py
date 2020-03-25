@@ -90,6 +90,18 @@ def getExpDateName():
     return 'EXPDATE'
 
 
+def getTokenName():
+    return 'TOKEN'
+
+
+def getCrecurrName():
+    return 'CRECURR'
+
+
+def getTrecurrName():
+    return 'TRECURR'
+
+
 def getNetworkName():
     return 'NETWORK'
 
