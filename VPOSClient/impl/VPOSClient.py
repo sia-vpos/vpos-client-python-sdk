@@ -1,12 +1,15 @@
+import logging
+import sys
+import traceback
 import urllib.parse as urlparse
 
 import requests
 
+from VPOSClient.request.RequestXML import *
 from VPOSClient.response.ResponseMapper import map_order_status_response, map_operation_response, \
     map_authorize_response, map_three_ds_authorize0, map_three_ds_authorize1, map_three_ds_authorize2
 from VPOSClient.utils.RequestValidator import *
 from VPOSClient.utils.Utils import map_for_verify_url_mac
-from VPOSClient.request.RequestXML import *
 
 
 class VPosClient:
@@ -22,11 +25,14 @@ class VPosClient:
         self._web_api = vpos_config.api_url
         self._url_redirect = vpos_config.redirect_url
         self._shop_id = vpos_config.shop_id
+        self._timeout = vpos_config.timeout
         self._proxies = None
+        self._cert = None
         if (vpos_config.proxy_host is not None) & (vpos_config.proxy_port is not None):
             self._set_proxy(vpos_config.proxy_host, vpos_config.proxy_port, vpos_config.proxy_username,
                             vpos_config.proxy_password)
-
+        self._set_ssl(vpos_config.cert_path, vpos_config.cert_key)
+        logging.getLogger(__name__).info("Client correctly initiated")
 
     def build_HTML_redirect_fragment(self, paymentInfo):
         """Create an HTML fragment for payment initiation.
@@ -35,7 +41,8 @@ class VPosClient:
         """
         validate_redirect_request(paymentInfo)
         paymentRequest = PaymentRequest(paymentInfo, self._shop_id)
-        return Utils.getHtml(self._url_redirect, paymentRequest.getParametersMap(self._start_key, self._api_result_key, self._digest_mode))
+        return Utils.getHtml(self._url_redirect,
+                             paymentRequest.getParametersMap(self._start_key, self._api_result_key, self._digest_mode))
 
     def authorize(self, authorization_request):
         """ This operation allows to forward authorization requests to the circuits
@@ -204,10 +211,21 @@ class VPosClient:
             proxy = proxy + username + ":" + password + "@" + str(proxy_name) + ":" + str(proxy_port)
         self._proxies = {"http": proxy}
 
-    def _execute_call(self, requestXml):
-        requestXml = 'data=' + str(requestXml, "utf-8")
-        print("REQUEST: " + requestXml)
-        response = requests.post(self._web_api, requestXml,
-                                 headers={'content-type': 'application/x-www-form-urlencoded'}, proxies=self._proxies)
-        print("RESPONSE: " + response.text)
+    def _set_ssl(self, cert_path, cert_key):
+        if cert_key is not None and cert_path is not None:
+            self._cert = (cert_path, cert_key)
+        elif cert_path is not None and cert_key is None:
+            self._cert = cert_path
+
+    def _execute_call(self, request_xml):
+        request_xml = 'data=' + str(request_xml, "utf-8")
+        logging.getLogger(__name__).info("REQUEST: " + request_xml)
+        try:
+            response = requests.post(self._web_api, request_xml,
+                                     headers={'content-type': 'application/x-www-form-urlencoded'},
+                                     proxies=self._proxies,
+                                     cert=self._cert, timeout=self._timeout)
+        except Exception as e:
+            raise VPOSException("Connection Error while contacting VPOS", traceback.format_exc()) from None
+        logging.getLogger(__name__).info("RESPONSE: " + response.text)
         return response.text

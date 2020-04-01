@@ -1,11 +1,12 @@
 import base64
 import hmac
+import logging
 
 
 def getMac(value, key, digestMode):
-    print("STRING FOR MAC: " + value)
+    logging.getLogger(__name__).info("STRING FOR MAC: " + value)
     dig = hmac.new(bytes(key, 'utf-8'), msg=bytes(value, 'utf-8'), digestmod=digestMode).hexdigest()
-    print("HMAC: " + dig)
+    logging.getLogger(__name__).info("HMAC: " + dig)
     return dig
 
 

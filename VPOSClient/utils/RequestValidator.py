@@ -107,6 +107,11 @@ def validate_redirect_request(request):
                                                     request.author_mode):
         invalid_fields.append(Constants.getAuthorModeName())
 
+    if request.token is not None and (
+            request.email is None or request.surname_ch is None or request.name_ch is None or request.network is None or request.exp_date is None):
+        raise VPOSException(
+            "Invalid or missing config params: For token payments name_ch, surname_ch, email, exp_date, network are required")
+
     if len(invalid_fields) > 0:
         raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
 
@@ -144,7 +149,7 @@ def validate_threeDSAuthorization0_request(request):
         invalid_fields.append(Constants.getExpDateName())
 
     if request.cvv2 is not None and not re.search(get_cvv2_Reg_Ex(),
-                                             request.cvv2):
+                                                  request.cvv2):
         invalid_fields.append(Constants.getCvv2Name())
 
     if request.accounting_mode is None or not re.search(get_accounting_mode_Reg_Ex(),
@@ -152,7 +157,7 @@ def validate_threeDSAuthorization0_request(request):
         invalid_fields.append(Constants.getAccountingModeName())
 
     if request.amount is None or not re.search(get_amount_Reg_Ex(),
-                                                        request.amount):
+                                               request.amount):
         invalid_fields.append(Constants.getAmountName())
 
     _validate_currency_and_exponent(request, invalid_fields)
@@ -161,53 +166,53 @@ def validate_threeDSAuthorization0_request(request):
         invalid_fields.append(Constants.getNetworkName())
 
     if request.email_ch is not None and not re.search(get_email_ch_Reg_Ex(),
-                                             request.email_ch):
+                                                      request.email_ch):
         invalid_fields.append(Constants.getEmailChName())
 
     if request.user_id is not None and not re.search(get_user_id_Reg_Ex(),
-                                             request.user_id):
+                                                     request.user_id):
         invalid_fields.append(Constants.getUserIdName())
 
     if request.acquirer is not None and not re.search(get_acquirer_Reg_Ex(),
-                                             request.acquirer):
+                                                      request.acquirer):
         invalid_fields.append(Constants.getAcquirerName())
 
     if request.ip_address is not None and not re.search(get_ip_address_Reg_Ex(),
-                                             request.ip_address):
+                                                        request.ip_address):
         invalid_fields.append(Constants.getIpAddressName())
 
     if request.usr_auth_flag is not None and not re.search(get_usr_auth_flag_Reg_Ex(),
-                                             request.usr_auth_flag):
+                                                           request.usr_auth_flag):
         invalid_fields.append(Constants.getUsrAuthFlagName())
 
     if request.op_descr is not None and not re.search(get_op_descr_Reg_Ex(),
-                                             request.op_descr):
+                                                      request.op_descr):
         invalid_fields.append(Constants.getOpDescrName())
 
     if request.anti_fraud is not None and not re.search(get_anti_fraud_Reg_Ex(),
-                                             request.anti_fraud):
+                                                        request.anti_fraud):
         invalid_fields.append(Constants.getAntiFraudName())
 
     if request.product_ref is not None and not re.search(get_product_ref_Reg_Ex(),
-                                             request.product_ref):
+                                                         request.product_ref):
         invalid_fields.append(Constants.getProductRefName())
 
     if request.name is not None and not re.search(get_name_Reg_Ex(),
-                                             request.name):
+                                                  request.name):
         invalid_fields.append(Constants.getNameName())
 
     if request.surname is not None and not re.search(get_surname_Reg_Ex(),
-                                             request.surname):
+                                                     request.surname):
         invalid_fields.append(Constants.getSurnameName())
 
     if request.tax_id is not None and not re.search(get_tax_id_Reg_Ex(),
-                                             request.tax_id):
+                                                    request.tax_id):
         invalid_fields.append(Constants.getTaxIdName())
 
     if request.three_ds_data is None or not isinstance(request.three_ds_data, Data3DSJsonDto):
         invalid_fields.append(Constants.getThreeDSDataName())
 
-    if request.notify_url is None :
+    if request.notify_url is None:
         invalid_fields.append(Constants.getNotifUrl())
 
     if len(invalid_fields) > 0:
@@ -265,7 +270,7 @@ def validate_authorize(request):
         invalid_fields.append(Constants.getAccountingModeName())
 
     if request.amount is None or not re.search(get_amount_Reg_Ex(),
-                                                        request.amount):
+                                               request.amount):
         invalid_fields.append(Constants.getAmountName())
 
     _validate_currency_and_exponent(request, invalid_fields)
@@ -274,47 +279,47 @@ def validate_authorize(request):
         invalid_fields.append(Constants.getNetworkName())
 
     if request.email_ch is not None and not re.search(get_email_ch_Reg_Ex(),
-                                             request.email_ch):
+                                                      request.email_ch):
         invalid_fields.append(Constants.getEmailChName())
 
     if request.user_id is not None and not re.search(get_user_id_Reg_Ex(),
-                                             request.user_id):
+                                                     request.user_id):
         invalid_fields.append(Constants.getUserIdName())
 
     if request.acquirer is not None and not re.search(get_acquirer_Reg_Ex(),
-                                             request.acquirer):
+                                                      request.acquirer):
         invalid_fields.append(Constants.getAcquirerName())
 
     if request.ip_address is not None and not re.search(get_ip_address_Reg_Ex(),
-                                             request.ip_address):
+                                                        request.ip_address):
         invalid_fields.append(Constants.getIpAddressName())
 
     if request.usr_auth_flag is not None and not re.search(get_usr_auth_flag_Reg_Ex(),
-                                             request.usr_auth_flag):
+                                                           request.usr_auth_flag):
         invalid_fields.append(Constants.getUsrAuthFlagName())
 
     if request.op_descr is not None and not re.search(get_op_descr_Reg_Ex(),
-                                             request.op_descr):
+                                                      request.op_descr):
         invalid_fields.append(Constants.getOpDescrName())
 
     if request.anti_fraud is not None and not re.search(get_anti_fraud_Reg_Ex(),
-                                             request.anti_fraud):
+                                                        request.anti_fraud):
         invalid_fields.append(Constants.getAntiFraudName())
 
     if request.product_ref is not None and not re.search(get_product_ref_Reg_Ex(),
-                                             request.product_ref):
+                                                         request.product_ref):
         invalid_fields.append(Constants.getProductRefName())
 
     if request.name is not None and not re.search(get_name_Reg_Ex(),
-                                             request.name):
+                                                  request.name):
         invalid_fields.append(Constants.getNameName())
 
     if request.surname is not None and not re.search(get_surname_Reg_Ex(),
-                                             request.surname):
+                                                     request.surname):
         invalid_fields.append(Constants.getSurnameName())
 
     if request.tax_id is not None and not re.search(get_tax_id_Reg_Ex(),
-                                             request.tax_id):
+                                                    request.tax_id):
         invalid_fields.append(Constants.getTaxIdName())
 
     if len(invalid_fields) > 0:

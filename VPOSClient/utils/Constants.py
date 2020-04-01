@@ -106,6 +106,10 @@ def getNetworkName():
     return 'NETWORK'
 
 
+def getEmailName():
+    return 'EMAIL'
+
+
 def getEmailChName():
     return 'EMAILCH'
 
@@ -136,6 +140,10 @@ def getThreeDSDataName():
 
 def getNameCHName():
     return 'NAMECH'
+
+
+def getSurnameCHName():
+    return 'SURNAMECH'
 
 
 def getNotifUrl():
@@ -368,6 +376,10 @@ def getMerchantIdName():
 
 def getCardTypeName():
     return 'CARDTYPE'
+
+
+def getCHInfoName():
+    return 'CHINFO'
 
 
 def getAuthNumberName():

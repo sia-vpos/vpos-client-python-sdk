@@ -41,7 +41,10 @@ class PaymentInfo:
         self.t_recurr = None
         self.c_recurr = None
         self.exp_date = None
-        self.iban= None
+        self.iban = None
+        self.email = None
+        self.name_ch = None
+        self.surname_ch = None
 
 
 class ThreeDSAuthorization0Request:

@@ -52,8 +52,8 @@ data = """{
 """
 
 
-def build_start_3DS_Auth_Request(order_id, operator_id, pan, exp_date, network, amount, currency, accounting_mode,
-                                 notify_url):
+def build_threeDS_authorize0(order_id, operator_id, pan, exp_date, network, amount, currency, accounting_mode,
+                             notify_url):
     data3ds = Data3DSJsonDto.from_json(data)
     step1 = ThreeDSAuthorization0Request(order_id, operator_id, pan, exp_date, "01", amount, currency, "I", data3ds,
                                          notify_url)
@@ -77,8 +77,26 @@ def build_get_html_payment_Request(url_back, url_done, url_ms, amount, currency,
     request = PaymentInfo(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
                           authorMode)
     request.data_3DS_json = Data3DSJsonDto.from_json(data_redirect)
-    #request.options = "M"
+    request.options = "M"
+    request.t_recurr = "U"
     
+    return request
+
+
+def build_get_html_payment_token_Request(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
+                                   authorMode):
+    request = PaymentInfo(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
+                          authorMode)
+    request.data_3DS_json = Data3DSJsonDto.from_json(data_redirect)
+    request.token = "0000500550493297466"
+    request.exp_date = "2112"
+    request.t_recurr = "U"
+    request.c_recurr = "899107067200401"
+    request.name_ch = "Mario"
+    request.surname_ch = "Rossi"
+    request.network = "98"
+    request.email = "test@tes.it"
+    request.shop_email = "test@tes.it"
     return request
 
 

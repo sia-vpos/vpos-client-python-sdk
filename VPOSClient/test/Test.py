@@ -1,8 +1,7 @@
-from xml.etree import ElementTree
+import logging
 
 from VPOSClient.impl.VPOSClient import VPosClient
 from VPOSClient.impl.VPosConfig import VPosConfig
-from VPOSClient.utils import Utils
 from VPOSClient.utils.RequestBuilderForTest import *
 from VPOSClient.utils.Utils import gen_order_id
 
@@ -33,11 +32,13 @@ config.config_proxy("proxy-dr.reply.it", 8080)
 client = VPosClient(config)
 # impl.set_proxy("proxy-dr.reply.it:8080")
 
-print(client.build_HTML_redirect_fragment(build_get_html_payment_Request(urlBack, urlDone, urlMs, amount, currency, "2", order_id, accountingMode, "I")))
+# print(client.build_HTML_redirect_fragment(build_get_html_payment_token_Request(urlBack, urlDone, urlMs, amount, currency, "2", order_id, accountingMode, "I")))
+logging.basicConfig(level=logging.INFO)
 
-#print(client.three_DS_authorize0(build_start_3DS_Auth_Request(order_id, operatorId, pan, expDate, network, amount, currency, accountingMode, notifUrl)).__dict__)
-#print(client.three_DS_authorize1((build_threeDS_authorize1(operatorId, "d1e69d82-9439-4b40-b6b9-9c5d13cd1802"))))
+# print(client.threeDS_authorize0(build_threeDS_authorize0(order_id, operatorId, pan, expDate, network, amount, currency, accountingMode,notifUrl)).__dict__)
+#print(client.threeDS_authorize0(build_threeDS_authorize0(order_id, operatorId, '4118830900940017', expDate, network, amount, currency, accountingMode, notifUrl)).__dict__)
+#print(client.threeDS_authorize1((build_threeDS_authorize1(operatorId, None))))
 #print(client.get_order_status(OrderStatusRequest("AUTH123456769123246", operatorId)))
-#client.capture(build_confirm_transaction("8032112928AT1gx2zgaykxk74", amount, currency, "15816791805478866964400948992201416592057357867885", shop_id, operatorId))
-#client.refund(build_refund_request("8032112928AT1gx2zgaykxk74", "15816791805478866964400948992201416592057357867885", amount, currency, shop_id, operatorId))
+# client.capture(build_confirm_transaction("8032112928AT1gx2zgaykxk74", amount, currency, "15816791805478866964400948992201416592057357867885", shop_id, operatorId))
+# client.refund(build_refund_request("8032112928AT1gx2zgaykxk74", "15816791805478866964400948992201416592057357867885", amount, currency, shop_id, operatorId))
 #client.authorize(build_authorize())

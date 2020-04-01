@@ -378,6 +378,11 @@ class PaymentRequest(Request):
         self._c_recurr = payment_info_request.c_recurr
         self._iban = payment_info_request.iban
 
+        self._email = payment_info_request.email
+        self._name_ch = payment_info_request.name_ch
+        self._surname_ch = payment_info_request.surname_ch
+
+
     def getParametersMap(self, redirect_key, api_result_key, digest_mode):
         map = OrderedDict()
         map[Constants.getUrlMsName()] = self._url_ms
@@ -415,11 +420,21 @@ class PaymentRequest(Request):
         if self._data_3DS_json is not None:
             map[Constants.get3DSJsonDataName()] = AES.AES_encrypt(self._data_3DS_json, api_result_key)
 
+        map[Constants.getTrecurrName()] = self._t_recurr
+        map[Constants.getCrecurrName()] = self._c_recurr
+        map[Constants.getTokenName()] = self._token
+        map[Constants.getExpDateName()] = self._exp_date
+        map[Constants.getNetworkName()] = self._network
+        map[Constants.getIBANName()] = self._iban
+
         map[Constants.getMacName()] = Encoder.getMac(self._string_for_mac(api_result_key), redirect_key, digest_mode)
 
         map[Constants.getUrlBackName()] = self._url_back
         map[Constants.getLangName()] = self._lang
         map[Constants.getShopEmailName()] = self._shop_email
+        map[Constants.getEmailName()] = self._email
+        map[Constants.getNameCHName()] = self._name_ch
+        map[Constants.getSurnameCHName()] = self._surname_ch
         return map
 
     def _string_for_mac(self, apiKey):
@@ -457,7 +472,7 @@ class PaymentRequest(Request):
         macString = Utils.appendField(macString, Constants.getBBPostepayName(), self._bb_poste_pay)
         macString = Utils.appendField(macString, Constants.getBPCardsName(), self._bp_cards)
 
-        if self._network is not None and self._network.equals("91"):
+        if self._network is not None and "91" in self._network:
             macString = Utils.appendField(macString, Constants.getPhoneNumberName(), self._phone_number)
             macString = Utils.appendField(macString, Constants.getCausationName(), self._causation)
             macString = Utils.appendField(macString, Constants.getUserName(), self._user)

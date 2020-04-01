@@ -49,19 +49,21 @@ def appendField(stringMac, fieldName, fieldValue):
     return stringMac
 
 
-def getHtml(urlApos, parametersMap):
+def getHtml(url_vpos, parameters_map):
     base_template = "<div><form id=\"myForm\"action=\"[VPOS_URL]\" method=\"POST\"><input name=\"PAGE\" type=\"hidden\" value=\"LAND\">[PARAMETERS]</form><script>document.getElementById('myForm').submit();</script></div>"
-    base_template = base_template.replace("[VPOS_URL]", urlApos)
-    base_template = base_template.replace("[PARAMETERS]", _generateHtmlParams(parametersMap))
+    base_template = base_template.replace("[VPOS_URL]", url_vpos)
+    if Constants.getTokenName() in parameters_map:
+        base_template = base_template.replace("LAND", "TOKEN")
+    base_template = base_template.replace("[PARAMETERS]", _generateHtmlParams(parameters_map))
     return base_template
 
 
-def _generateHtmlParams(parametersMap):
+def _generateHtmlParams(parameters_map):
     inputPattern = "<input type=\"hidden\" name=\"KEY\" value=\"VALUE\">"
     stringForHtml = str()
-    for key in parametersMap.keys():
-        if parametersMap.get(key) is not None:
-            stringForHtml = stringForHtml + inputPattern.replace('KEY', key).replace('VALUE', parametersMap.get(key))
+    for key in parameters_map.keys():
+        if parameters_map.get(key) is not None:
+            stringForHtml = stringForHtml + inputPattern.replace('KEY', key).replace('VALUE', parameters_map.get(key))
     return stringForHtml
 
 
@@ -208,7 +210,7 @@ def map_for_verify_url_mac(values):
         mac_string = appendField(mac_string, Constants.getAuthNumberName(), values.get(Constants.getAuthNumberName()))
     mac_string = appendField(mac_string, Constants.getAmountName(), values.get(Constants.getAmountName()))
     mac_string = appendField(mac_string, Constants.getCurrencyName(), values.get(Constants.getCurrencyName()))
-    mac_string = appendField(mac_string, Constants.getExponentName(), values.get(Constants.getExponentName()))
+    #mac_string = appendField(mac_string, Constants.getExponentName(), values.get(Constants.getExponentName()))
 
     mac_string = appendField(mac_string, Constants.getTransactionIdName(), values.get(Constants.getTransactionIdName()))
     mac_string = appendField(mac_string, Constants.getAccountingModeName(),
@@ -233,14 +235,8 @@ def map_for_verify_url_mac(values):
     mac_string = appendField(mac_string, Constants.getPanAliasTailName(), values.get(Constants.getPanAliasTailName()))
     mac_string = appendField(mac_string, Constants.getMaskedPanName(), values.get(Constants.getMaskedPanName()))
 
-    mac_string = appendField(mac_string, Constants.getPanAliasName(), values.get(Constants.getPanAliasName()))
-    mac_string = appendField(mac_string, Constants.getPanAliasExpDateName(),
-                             values.get(Constants.getPanAliasExpDateName()))
-    mac_string = appendField(mac_string, Constants.getPanAliasTailName(), values.get(Constants.getPanAliasTailName()))
-
-    mac_string = appendField(mac_string, Constants.getMaskedPanName(), values.get(Constants.getMaskedPanName()))
-    mac_string = appendField(mac_string, Constants.getPanExpDateName(), values.get(Constants.getPanExpDateName()))
     mac_string = appendField(mac_string, Constants.getPanTailName(), values.get(Constants.getPanTailName()))
+    mac_string = appendField(mac_string, Constants.getPanExpDateName(), values.get(Constants.getPanExpDateName()))
 
     mac_string = appendField(mac_string, Constants.getAccountHolderName(), values.get(Constants.getAccountHolderName()))
     mac_string = appendField(mac_string, Constants.getIBANName(), values.get(Constants.getIBANName()))
@@ -249,6 +245,8 @@ def map_for_verify_url_mac(values):
     mac_string = appendField(mac_string, Constants.getAcquirerBinName(), values.get(Constants.getAcquirerBinName()))
     mac_string = appendField(mac_string, Constants.getMerchantIdName(), values.get(Constants.getMerchantIdName()))
     mac_string = appendField(mac_string, Constants.getCardTypeName(), values.get(Constants.getCardTypeName()))
+    mac_string = appendField(mac_string, Constants.getCHInfoName(), values.get(Constants.getCHInfoName()))
+
     return mac_string
 
 
