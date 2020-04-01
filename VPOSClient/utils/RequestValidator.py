@@ -107,11 +107,6 @@ def validate_redirect_request(request):
                                                     request.author_mode):
         invalid_fields.append(Constants.getAuthorModeName())
 
-    if request.token is not None and (
-            request.email is None or request.surname_ch is None or request.name_ch is None or request.network is None or request.exp_date is None):
-        raise VPOSException(
-            "Invalid or missing config params: For token payments name_ch, surname_ch, email, exp_date, network are required")
-
     if len(invalid_fields) > 0:
         raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
 
