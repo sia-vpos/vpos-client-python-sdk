@@ -233,8 +233,11 @@ def map_for_verify_url_mac(values):
     mac_string = appendField(mac_string, Constants.getPanAliasExpDateName(),
                              values.get(Constants.getPanAliasExpDateName()))
     mac_string = appendField(mac_string, Constants.getPanAliasTailName(), values.get(Constants.getPanAliasTailName()))
-    mac_string = appendField(mac_string, Constants.getMaskedPanName(), values.get(Constants.getMaskedPanName()))
 
+    mac_string = appendField(mac_string, Constants.getTrecurrName(), values.get(Constants.getTrecurrName()))
+    mac_string = appendField(mac_string, Constants.getCrecurrName(), values.get(Constants.getCrecurrName()))
+
+    mac_string = appendField(mac_string, Constants.getMaskedPanName(), values.get(Constants.getMaskedPanName()))
     mac_string = appendField(mac_string, Constants.getPanTailName(), values.get(Constants.getPanTailName()))
     mac_string = appendField(mac_string, Constants.getPanExpDateName(), values.get(Constants.getPanExpDateName()))
 

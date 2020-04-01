@@ -1,5 +1,4 @@
 import logging
-import sys
 import traceback
 import urllib.parse as urlparse
 
@@ -140,7 +139,7 @@ class VPosClient:
         Validate the result of a payment initiation verifying the integrity of the data contained in URMLS/URLDONE
         :param url:  url generated from SIA VPOS redirect
         """
-        parsed = urlparse.parse_qs(urlparse.urlparse(url).query)
+        parsed = dict(urlparse.parse_qsl(urlparse.urlparse(url).query))
         receivedMac = parsed.get(Constants.getMacName())
         calculated_mac = Encoder.getMac(map_for_verify_url_mac(parsed), self._api_result_key, self._digest_mode)
         if not Encoder.compareDigest(calculated_mac, receivedMac):
