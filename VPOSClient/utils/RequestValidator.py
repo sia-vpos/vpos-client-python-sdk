@@ -125,6 +125,8 @@ def validate_config(config):
         invalid_fields.append(Constants.getRedirectKeyName())
     if config.redirect_url is None:
         invalid_fields.append(Constants.getRedirectUrlName())
+    if config.proxy_scheme is not None and config.proxy_scheme is not 'http' and config.proxy_scheme is not 'https':
+        invalid_fields.append(Constants.getProxySchemeName())
 
     if len(invalid_fields) > 0:
         raise VPOSException("Invalid or missing config params: " + str(invalid_fields))

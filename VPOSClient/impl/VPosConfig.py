@@ -11,15 +11,17 @@ class VPosConfig:
         self.algorithm = algorithm
         self.proxy_host = None
         self.proxy_port = None
+        self.proxy_scheme=None
         self.proxy_username = None
         self.proxy_password = None
         self.cert_path = None
         self.cert_key = None
         self.timeout = 15
 
-    def config_proxy(self, proxy_name, proxy_port, proxy_username=None, proxy_password=None):
+    def config_proxy(self, proxy_name, proxy_port, proxy_scheme, proxy_username=None, proxy_password=None):
         self.proxy_host = proxy_name
         self.proxy_port = proxy_port
+        self.proxy_scheme = proxy_scheme
         self.proxy_username = proxy_username
         self.proxy_password = proxy_password
 

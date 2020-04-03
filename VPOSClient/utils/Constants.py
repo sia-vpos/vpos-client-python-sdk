@@ -400,3 +400,8 @@ def getRedirectKeyName():
 
 def getRedirectUrlName():
     return 'REDIRECT_URL'
+
+
+def getProxySchemeName():
+    return 'PROXY_SCHEME'
+

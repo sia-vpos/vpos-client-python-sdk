@@ -61,7 +61,7 @@ class RefundRequestXml(Request):
         if self._options is not None:
             Utils.addChild(refundRequest, TagConstants.getOptionsTag(), self._options)
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
+        mac.text = Encoder.get_mac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
     def _string_for_mac(self):
@@ -100,7 +100,7 @@ class OrderStatusRequestXml(Request):
 
         # Calculate and set Mac
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
+        mac.text = Encoder.get_mac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
     def _string_for_mac(self):
@@ -145,7 +145,7 @@ class CaptureRequestXml(Request):
             Utils.addChild(confirmRequest, TagConstants.getOptionsTag(), self._options)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
+        mac.text = Encoder.get_mac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
     def _string_for_mac(self):
@@ -238,7 +238,7 @@ class ThreeDSAuthorization0RequestXML(Request):
         Utils.addOptionalChild(authorization3DS, TagConstants.getChallengeWinSizeTag(), self._challenge_win_size)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(api_result_key), api_result_key, digest_mode)
+        mac.text = Encoder.get_mac(self._string_for_mac(api_result_key), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
     def _string_for_mac(self, api_result_key):
@@ -296,7 +296,7 @@ class ThreeDSAuthorization1RequestXML(Request):
         Utils.addChild(authorization3DS, TagConstants.getThreeDSTransactionIDTag(), self._three_DS_trans_id)
         Utils.addChild(authorization3DS, TagConstants.getThreeDSMtdComplIndTag(), self._three_DS_Mtd_compl_ind)
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
+        mac.text = Encoder.get_mac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
     def _string_for_mac(self):
@@ -312,8 +312,8 @@ class ThreeDSAuthorization1RequestXML(Request):
 
 class ThreeDSAuthorization2RequestXML(Request):
     def __init__(self, threeDS2_request, shop_id):
-        super().__init__(shop_id, threeDS2_request.operator_id, threeDS2_request.options)
-        self._operation = 'THREEDSAUTHORIZATION1'
+        super().__init__(shop_id, threeDS2_request.operator_id, None)
+        self._operation = 'THREEDSAUTHORIZATION2'
         self._order_id = threeDS2_request.order_id
         self._three_DS_trans_id = threeDS2_request.three_DS_trans_id
 
@@ -324,7 +324,7 @@ class ThreeDSAuthorization2RequestXML(Request):
 
         Utils.addChild(authorization3DS, TagConstants.getThreeDSTransactionIDTag(), self._three_DS_trans_id)
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
+        mac.text = Encoder.get_mac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
     def _string_for_mac(self):
@@ -382,7 +382,6 @@ class PaymentRequest(Request):
         self._name_ch = payment_info_request.name_ch
         self._surname_ch = payment_info_request.surname_ch
 
-
     def getParametersMap(self, redirect_key, api_result_key, digest_mode):
         map = OrderedDict()
         map[Constants.getUrlMsName()] = self._url_ms
@@ -427,7 +426,7 @@ class PaymentRequest(Request):
         map[Constants.getNetworkName()] = self._network
         map[Constants.getIBANName()] = self._iban
 
-        map[Constants.getMacName()] = Encoder.getMac(self._string_for_mac(api_result_key), redirect_key, digest_mode)
+        map[Constants.getMacName()] = Encoder.get_mac(self._string_for_mac(api_result_key), redirect_key, digest_mode)
 
         map[Constants.getUrlBackName()] = self._url_back
         map[Constants.getLangName()] = self._lang
@@ -555,7 +554,7 @@ class OnlineAuthorizationRequestXml(Request):
         Utils.addOptionalChild(authorization, TagConstants.getCreatePanAliasTag(), self._create_pan_alias)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
-        mac.text = Encoder.getMac(self._string_for_mac(), api_result_key, digest_mode)
+        mac.text = Encoder.get_mac(self._string_for_mac(), api_result_key, digest_mode)
         return ET.tostring(request, "utf-8", method='xml')
 
     def _string_for_mac(self):

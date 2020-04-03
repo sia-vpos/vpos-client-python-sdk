@@ -3,14 +3,14 @@ import hmac
 import logging
 
 
-def getMac(value, key, digestMode):
+def get_mac(value, key, digestMode):
     logging.getLogger(__name__).info("STRING FOR MAC: " + value)
     dig = hmac.new(bytes(key, 'utf-8'), msg=bytes(value, 'utf-8'), digestmod=digestMode).hexdigest()
     logging.getLogger(__name__).info("HMAC: " + dig)
     return dig
 
 
-def compareDigest(a, b):
+def compare_digest(a, b):
     return hmac.compare_digest(a, b)
 
 

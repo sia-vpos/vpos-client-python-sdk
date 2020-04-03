@@ -90,7 +90,8 @@ class ThreeDSAuthorization1Request:
 
 
 class ThreeDSAuthorization2Request:
-    def __init__(self, operator_id, three_DS_trans_id):
+    def __init__(self, order_id, operator_id, three_DS_trans_id):
+        self.order_id = order_id
         self.operator_id = operator_id
         self.three_DS_trans_id = three_DS_trans_id
 

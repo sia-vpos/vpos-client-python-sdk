@@ -100,16 +100,16 @@ def build_get_html_payment_token_Request(url_back, url_done, url_ms, amount, cur
     return request
 
 
-def build_confirm_transaction(transaction_id, amount, currency, order_id, shop_id, operator_id):
-    return CaptureRequest(transaction_id, amount, currency, order_id, shop_id, operator_id)
+def build_confirm_transaction(transaction_id, amount, currency, order_id, operator_id):
+    return CaptureRequest(transaction_id, amount, currency, order_id, operator_id)
 
 
-def build_refund_request(transaction_id, order_id, amount, currency, shop_id, operator_id):
-    return RefundRequest(transaction_id, order_id, amount, currency, shop_id, operator_id)
+def build_refund_request(transaction_id, order_id, amount, currency, operator_id):
+    return RefundRequest(transaction_id, order_id, amount, currency, operator_id)
 
 
-def build_authorize():
-    auth = AuthorizationRequest("12345676912", "OPERATOR", "4598250000000027", "2112", "6000", "978", "I", "93")
+def build_authorize(order_id):
+    auth = AuthorizationRequest(order_id, "OPERATOR", "4598250000000027", "2112", "6000", "978", "I", "93")
     auth.cvv2 = "111"
     auth.email_ch = "dsdsd@gmail.it"
     return auth
@@ -120,3 +120,6 @@ def get_separator(name):
         "###################################################################################################################\n"
         + "\t\t\t\tTEST  " + name + "\n"
                                     "###################################################################################################################\n")
+
+def build_threeDS_authorize2(order_id, operator_id,three_DS_trans_id):
+    return ThreeDSAuthorization2Request(order_id, operator_id, three_DS_trans_id);

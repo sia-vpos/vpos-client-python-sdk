@@ -27,8 +27,8 @@ class VPosClient:
         self._timeout = vpos_config.timeout
         self._proxies = None
         self._cert = None
-        if (vpos_config.proxy_host is not None) & (vpos_config.proxy_port is not None):
-            self._set_proxy(vpos_config.proxy_host, vpos_config.proxy_port, vpos_config.proxy_username,
+        if vpos_config.proxy_host is not None and vpos_config.proxy_port is not None and vpos_config.proxy_scheme is not None:
+            self._set_proxy(vpos_config.proxy_host, vpos_config.proxy_port, vpos_config.proxy_scheme, vpos_config.proxy_username,
                             vpos_config.proxy_password)
         self._set_ssl(vpos_config.cert_path, vpos_config.cert_key)
         logging.getLogger(__name__).info("Client correctly initiated")
@@ -141,8 +141,8 @@ class VPosClient:
         """
         parsed = dict(urlparse.parse_qsl(urlparse.urlparse(url).query))
         receivedMac = parsed.get(Constants.getMacName())
-        calculated_mac = Encoder.getMac(map_for_verify_url_mac(parsed), self._api_result_key, self._digest_mode)
-        if not Encoder.compareDigest(calculated_mac, receivedMac):
+        calculated_mac = Encoder.get_mac(map_for_verify_url_mac(parsed), self._api_result_key, self._digest_mode)
+        if not Encoder.compare_digest(calculated_mac, receivedMac):
             return False
         else:
             return True
@@ -153,62 +153,64 @@ class VPosClient:
         """
         response = Utils.stringToXML(response)
         receivedMac = response.find(Constants.getMacName())
-        calculatedMac = Encoder.getMac(Utils.geResultStringForMac(response), self._api_result_key, self._digest_mode)
+        calculatedMac = Encoder.get_mac(Utils.geResultStringForMac(response), self._api_result_key, self._digest_mode)
 
-        if (not receivedMac.text == "NULL") & (not Encoder.compareDigest(receivedMac.text, calculatedMac)):
+        if (not receivedMac.text == "NULL") and (not Encoder.compare_digest(receivedMac.text, calculatedMac)):
             raise VPOSException("Response MAC is not valid")
 
         data = response.find(TagConstants.getDataTag())
-        if (data is not None) & (data.find(TagConstants.getOperationTag()) is not None):
-            operation_calculated_mac = Encoder.getMac(
+        if data is not None and data.find(TagConstants.getOperationTag()) is not None:
+            operation_calculated_mac = Encoder.get_mac(
                 Utils.getOperationStringForMac(data.find(TagConstants.getOperationTag())), self._api_result_key,
                 self._digest_mode)
             operation_received_mac = data.find(TagConstants.getOperationTag()).find(TagConstants.getMACTag())
             if (not operation_received_mac.text == "NULL") & (
-                    not Encoder.compareDigest(operation_received_mac.text, operation_calculated_mac)):
+                    not Encoder.compare_digest(operation_received_mac.text, operation_calculated_mac)):
                 raise VPOSException("Operation MAC is not valid")
 
-        if (data is not None) & (data.find(TagConstants.getAuthorizationTag()) is not None):
-            authorization_calculated_mac = Encoder.getMac(
+        if data is not None and data.find(TagConstants.getAuthorizationTag()) is not None:
+            authorization_calculated_mac = Encoder.get_mac(
                 Utils.getAuthorizationStringForMac(data.find(TagConstants.getAuthorizationTag())), self._api_result_key,
                 self._digest_mode)
             authorization_received_mac = data.find(TagConstants.getAuthorizationTag()).find(TagConstants.getMACTag())
             if (not authorization_received_mac.text == "NULL") & (
-                    not Encoder.compareDigest(authorization_received_mac.text, authorization_calculated_mac)):
+                    not Encoder.compare_digest(authorization_received_mac.text, authorization_calculated_mac)):
                 raise VPOSException("Authorization MAC is not valid")
 
-        if (data is not None) & (data.find(TagConstants.getThreeDSChallengeTag()) is not None):
-            challenge_calculated_mac = Encoder.getMac(
+        if data is not None and data.find(TagConstants.getThreeDSChallengeTag()) is not None:
+            challenge_calculated_mac = Encoder.get_mac(
                 Utils.getChallengeStringForMac(data.find(TagConstants.getThreeDSChallengeTag())), self._api_result_key,
                 self._digest_mode)
             challenge_received_mac = data.find(TagConstants.getThreeDSChallengeTag()).find(TagConstants.getMACTag())
             if (not challenge_received_mac.text == "NULL") & (
-                    not Encoder.compareDigest(challenge_received_mac.text, challenge_calculated_mac)):
+                    not Encoder.compare_digest(challenge_received_mac.text, challenge_calculated_mac)):
                 raise VPOSException("Challenge MAC is not valid")
 
-        if (data is not None) & (data.find(TagConstants.getThreeDSMtdTag()) is not None):
-            mtd_calculated_mac = Encoder.getMac(
+        if data is not None and data.find(TagConstants.getThreeDSMtdTag()) is not None:
+            mtd_calculated_mac = Encoder.get_mac(
                 Utils.getThreeDSMtdStringForMac(data.find(TagConstants.getThreeDSMtdTag())), self._api_result_key,
                 self._digest_mode)
             mtd_received_mac = data.find(TagConstants.getThreeDSMtdTag()).find(TagConstants.getMACTag())
             if (not mtd_received_mac.text == "NULL") & (
-                    not Encoder.compareDigest(mtd_received_mac.text, mtd_calculated_mac)):
+                    not Encoder.compare_digest(mtd_received_mac.text, mtd_calculated_mac)):
                 raise VPOSException("ThreeDS Method MAC is not valid")
 
-        if (data is not None) & (data.find(TagConstants.getPanAliasDataTag()) is not None):
-            panAlias_calculated_mac = Encoder.getMac(
+        if data is not None and data.find(TagConstants.getPanAliasDataTag()) is not None:
+            panAlias_calculated_mac = Encoder.get_mac(
                 Utils.getPanAliasDataStringForMac(data.find(TagConstants.getPanAliasDataTag())), self._api_result_key,
                 self._digest_mode)
             panAlias_received_mac = data.find(TagConstants.getPanAliasDataTag()).find(TagConstants.getMACTag())
             if (not panAlias_received_mac.text == "NULL") & (
-                    not Encoder.compareDigest(panAlias_received_mac.text, panAlias_calculated_mac)):
+                    not Encoder.compare_digest(panAlias_received_mac.text, panAlias_calculated_mac)):
                 raise VPOSException("Pan Alias MAC is not valid")
 
-    def _set_proxy(self, proxy_name, proxy_port, username=None, password=None):
-        proxy = "http://" + str(proxy_name) + ":" + str(proxy_port)
+    def _set_proxy(self, proxy_name, proxy_port, proxy_scheme, username=None, password=None):
+        proxy = str(proxy_scheme) + "://"
         if username is not None and password is not None:
             proxy = proxy + username + ":" + password + "@" + str(proxy_name) + ":" + str(proxy_port)
-        self._proxies = {"http": proxy}
+        else:
+            proxy = proxy + str(proxy_name) + ":" + str(proxy_port)
+        self._proxies = {"proxy_scheme": proxy}
 
     def _set_ssl(self, cert_path, cert_key):
         if cert_key is not None and cert_path is not None:

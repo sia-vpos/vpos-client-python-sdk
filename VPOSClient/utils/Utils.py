@@ -50,10 +50,12 @@ def appendField(stringMac, fieldName, fieldValue):
 
 
 def getHtml(url_vpos, parameters_map):
-    base_template = "<div><form id=\"myForm\"action=\"[VPOS_URL]\" method=\"POST\"><input name=\"PAGE\" type=\"hidden\" value=\"LAND\">[PARAMETERS]</form><script>document.getElementById('myForm').submit();</script></div>"
+    base_template = "<div><form id=\"myForm\"action=\"[VPOS_URL]\" method=\"POST\"><input name=\"PAGE\" type=\"hidden\" value=\"PAGE_VALUE\">[PARAMETERS]</form><script>document.getElementById('myForm').submit();</script></div>"
     base_template = base_template.replace("[VPOS_URL]", url_vpos)
-    if Constants.getTokenName() in parameters_map:
-        base_template = base_template.replace("LAND", "TOKEN")
+    if Constants.getTokenName() in parameters_map and parameters_map.get(Constants.getTokenName()) is not None:
+        base_template = base_template.replace("PAGE_VALUE", "TOKEN")
+    else:
+        base_template = base_template.replace("PAGE_VALUE", "LAND")
     base_template = base_template.replace("[PARAMETERS]", _generateHtmlParams(parameters_map))
     return base_template
 
