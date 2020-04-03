@@ -24,4 +24,3 @@ def base64ToString(base64String):
     bytes = base64String.encode('utf-8')
     string_bytes = base64.b64decode(bytes)
     return string_bytes.decode('utf-8')
-

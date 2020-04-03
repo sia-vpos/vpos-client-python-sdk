@@ -28,7 +28,8 @@ class VPosClient:
         self._proxies = None
         self._cert = None
         if vpos_config.proxy_host is not None and vpos_config.proxy_port is not None and vpos_config.proxy_scheme is not None:
-            self._set_proxy(vpos_config.proxy_host, vpos_config.proxy_port, vpos_config.proxy_scheme, vpos_config.proxy_username,
+            self._set_proxy(vpos_config.proxy_host, vpos_config.proxy_port, vpos_config.proxy_scheme,
+                            vpos_config.proxy_username,
                             vpos_config.proxy_password)
         self._set_ssl(vpos_config.cert_path, vpos_config.cert_key)
         logging.getLogger(__name__).info("Client correctly initiated")

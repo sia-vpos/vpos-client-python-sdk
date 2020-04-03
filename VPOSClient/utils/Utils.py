@@ -146,9 +146,11 @@ def getAuthorizationStringForMac(authorizationXml):
     stringForMac = append_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getNetworkTag()).text)
 
     if authorizationXml.find(TagConstants.getOrderIDTag()) is not None:
-        stringForMac = append_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getOrderIDTag()).text)
+        stringForMac = append_field_for_verification(stringForMac,
+                                                     authorizationXml.find(TagConstants.getOrderIDTag()).text)
     else:
-        stringForMac = append_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getOrderIdTag()).text)
+        stringForMac = append_field_for_verification(stringForMac,
+                                                     authorizationXml.find(TagConstants.getOrderIdTag()).text)
 
     stringForMac = append_field_for_verification(stringForMac,
                                                  authorizationXml.find(TagConstants.getTransactionAmountTag()).text)
@@ -212,7 +214,7 @@ def map_for_verify_url_mac(values):
         mac_string = appendField(mac_string, Constants.getAuthNumberName(), values.get(Constants.getAuthNumberName()))
     mac_string = appendField(mac_string, Constants.getAmountName(), values.get(Constants.getAmountName()))
     mac_string = appendField(mac_string, Constants.getCurrencyName(), values.get(Constants.getCurrencyName()))
-    #mac_string = appendField(mac_string, Constants.getExponentName(), values.get(Constants.getExponentName()))
+    # mac_string = appendField(mac_string, Constants.getExponentName(), values.get(Constants.getExponentName()))
 
     mac_string = appendField(mac_string, Constants.getTransactionIdName(), values.get(Constants.getTransactionIdName()))
     mac_string = appendField(mac_string, Constants.getAccountingModeName(),

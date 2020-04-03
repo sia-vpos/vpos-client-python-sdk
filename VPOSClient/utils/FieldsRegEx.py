@@ -74,7 +74,7 @@ def get_order_id_Reg_Ex():
 def get_pan_Reg_Ex():
     min_len = 10
     max_len = 19
-    return "^[0-9]{" + str(min_len) + "," +str(max_len) + "}"
+    return "^[0-9]{" + str(min_len) + "," + str(max_len) + "}"
 
 
 def get_exp_date_Reg_Ex():

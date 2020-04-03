@@ -79,12 +79,13 @@ def build_get_html_payment_Request(url_back, url_done, url_ms, amount, currency,
     request.data_3DS_json = Data3DSJsonDto.from_json(data_redirect)
     request.options = "M"
     request.t_recurr = "U"
-    
+
     return request
 
 
-def build_get_html_payment_token_Request(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
-                                   authorMode):
+def build_get_html_payment_token_Request(url_back, url_done, url_ms, amount, currency, exponent, order_id,
+                                         accountingMode,
+                                         authorMode):
     request = PaymentInfo(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
                           authorMode)
     request.data_3DS_json = Data3DSJsonDto.from_json(data_redirect)
@@ -121,5 +122,6 @@ def get_separator(name):
         + "\t\t\t\tTEST  " + name + "\n"
                                     "###################################################################################################################\n")
 
-def build_threeDS_authorize2(order_id, operator_id,three_DS_trans_id):
+
+def build_threeDS_authorize2(order_id, operator_id, three_DS_trans_id):
     return ThreeDSAuthorization2Request(order_id, operator_id, three_DS_trans_id);

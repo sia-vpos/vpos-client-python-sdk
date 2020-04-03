@@ -116,15 +116,11 @@ def map_authorize_response(response):
     response_dto.result = get_tag_value(response_xml, TagConstants.getResultTag())
     data = response_xml.find(TagConstants.getDataTag())
     if (data is not None) and (data.find(TagConstants.getAuthorizationTag()) is not None):
-            auth_dto = Authorization(data.find(TagConstants.getAuthorizationTag()))
-            response_dto.authorization= auth_dto
+        auth_dto = Authorization(data.find(TagConstants.getAuthorizationTag()))
+        response_dto.authorization = auth_dto
 
     if (data is not None) and (data.find(TagConstants.getPanAliasDataTag()) is not None):
         pan_alias_xml = PanAliasData(data.find(TagConstants.getPanAliasDataTag()))
         response_dto.pan_alias_data = pan_alias_xml
 
     return response_dto
-
-
-
-

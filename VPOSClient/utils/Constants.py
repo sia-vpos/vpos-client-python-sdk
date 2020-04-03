@@ -404,4 +404,3 @@ def getRedirectUrlName():
 
 def getProxySchemeName():
     return 'PROXY_SCHEME'
-

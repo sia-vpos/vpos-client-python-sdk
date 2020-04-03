@@ -11,7 +11,7 @@ class VPosConfig:
         self.algorithm = algorithm
         self.proxy_host = None
         self.proxy_port = None
-        self.proxy_scheme=None
+        self.proxy_scheme = None
         self.proxy_username = None
         self.proxy_password = None
         self.cert_path = None

@@ -21,7 +21,7 @@ class AuthorizeResponse:
         self.timestamp = None
         self.result = None
         self.authorization = None
-        self.pan_alias_data= None
+        self.pan_alias_data = None
 
 
 class OperationResponse:
@@ -50,7 +50,7 @@ class ThreeDSAuthorize1Response:
         self.result = None
         self.three_DS_Challenge = None
         self.authorization = None
-        self.pan_alias_data=None
+        self.pan_alias_data = None
 
 
 class ThreeDSAuthorize2Response:
