@@ -378,6 +378,18 @@ def getCardTypeName():
     return 'CARDTYPE'
 
 
+def getAmazonAuthIdName():
+    return 'AMAZONAUTHID'
+
+
+def getAmazonCaptureIdName():
+    return 'AMAZONCAPTUREID'
+
+
+def getCFiscName():
+    return 'CFISC'
+
+
 def getCHInfoName():
     return 'CHINFO'
 

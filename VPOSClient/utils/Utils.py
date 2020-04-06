@@ -249,9 +249,16 @@ def map_for_verify_url_mac(values):
     mac_string = appendField(mac_string, Constants.getIBANName(), values.get(Constants.getIBANName()))
     mac_string = appendField(mac_string, Constants.getAliasStrName(), values.get(Constants.getAliasStrName()))
 
+    mac_string = appendField(mac_string, Constants.getEmailChName(), values.get(Constants.getEmailChName()))
+    mac_string = appendField(mac_string, Constants.getCFiscName(), values.get(Constants.getCFiscName()))
+
     mac_string = appendField(mac_string, Constants.getAcquirerBinName(), values.get(Constants.getAcquirerBinName()))
     mac_string = appendField(mac_string, Constants.getMerchantIdName(), values.get(Constants.getMerchantIdName()))
     mac_string = appendField(mac_string, Constants.getCardTypeName(), values.get(Constants.getCardTypeName()))
+
+    mac_string = appendField(mac_string, Constants.getAmazonAuthIdName(), values.get(Constants.getAmazonAuthIdName()))
+    mac_string = appendField(mac_string, Constants.getAmazonCaptureIdName(), values.get(Constants.getAmazonCaptureIdName()))
+
     mac_string = appendField(mac_string, Constants.getCHInfoName(), values.get(Constants.getCHInfoName()))
 
     return mac_string
