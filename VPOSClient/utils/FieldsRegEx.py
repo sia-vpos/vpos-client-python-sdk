@@ -152,6 +152,10 @@ def get_pares_Reg_Ex():
     return "([Y]|[N]|[A]|[U]){1}"
 
 
+def algorithm_Reg_Ex():
+    return "([HMAC_SHA_256][HMAC_SHA_512])"
+
+
 def get_tax_id_Reg_Ex():
     fc_len = 16
     ti_len = 11

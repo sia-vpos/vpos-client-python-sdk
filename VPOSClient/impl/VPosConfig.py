@@ -2,7 +2,7 @@ import hashlib
 
 
 class VPosConfig:
-    def __init__(self, shop_id, redirect_key, redirect_url, api_key, api_url, algorithm=hashlib.sha256):
+    def __init__(self, shop_id, redirect_key, redirect_url, api_key, api_url, algorithm='HMAC_SHA_256'):
         self.shop_id = shop_id
         self.redirect_key = redirect_key
         self.redirect_url = redirect_url

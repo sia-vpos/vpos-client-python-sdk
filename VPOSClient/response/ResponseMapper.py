@@ -75,8 +75,8 @@ def map_three_ds_authorize1(response):
     data = response_xml.find(TagConstants.getDataTag())
 
     if (data is not None) and (data.find(TagConstants.getAuthorizationTag()) is not None):
-        operation_xml = data.find(TagConstants.getOperationTag())
-        operation = Operation(operation_xml)
+        operation_xml = data.find(TagConstants.getAuthorizationTag())
+        operation = Authorization(operation_xml)
         response_dto.operation = operation
 
     if (data is not None) and (data.find(TagConstants.getPanAliasDataTag()) is not None):
@@ -98,8 +98,8 @@ def map_three_ds_authorize2(response):
     data = response_xml.find(TagConstants.getDataTag())
 
     if (data is not None) and (data.find(TagConstants.getAuthorizationTag()) is not None):
-        operation_xml = data.find(TagConstants.getOperationTag())
-        operation = Operation(operation_xml)
+        operation_xml = data.find(TagConstants.getAuthorizationTag())
+        operation = Authorization(operation_xml)
         response_dto.operation = operation
 
     if (data is not None) and (data.find(TagConstants.getPanAliasDataTag()) is not None):

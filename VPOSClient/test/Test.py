@@ -1,3 +1,4 @@
+import hashlib
 import logging
 
 from VPOSClient.impl.VPOSClient import VPosClient
@@ -34,15 +35,13 @@ client = VPosClient(config)
 # impl.set_proxy("proxy-dr.reply.it:8080")
 logging.basicConfig(level=logging.INFO)
 
-# print(client.build_HTML_redirect_fragment(build_get_html_payment_Request(urlBack, urlDone, urlMs, amount, currency, "2", order_id, accountingMode, "I")))
+#print(client.build_HTML_redirect_fragment(build_get_html_payment_Request(urlBack, urlDone, urlMs, amount, '826', None, order_id, accountingMode, "I")))
 # print(client.verify_MAC("http://localhost:8080/payment-gateway/vpos/tokenize?ORDERID=1585919322092143568728681910679428531949566&SHOPID=129289999900002&AUTHNUMBER=413889&AMOUNT=10&CURRENCY=978&TRANSACTIONID=8032112928SL211ntcm0icwf4&ACCOUNTINGMODE=D&AUTHORMODE=I&RESULT=00&TRANSACTIONTYPE=TT07&TRECURR=U&CRECURR=899107067200401&NETWORK=02&MAC=105e962d0727ef0d30a1ce21d14e6813449daa6375c433d2cc2fa631bc3bf680"))
-# print(client.threeDS_authorize0(build_threeDS_authorize0(order_id, operatorId, pan, expDate, network, amount, currency, accountingMode, notifUrl)).__dict__)
+#print(client.threeDS_authorize0(build_threeDS_authorize0(order_id, operatorId, pan, expDate, network, amount, currency, accountingMode, notifUrl)).__dict__)
 # print(client.threeDS_authorize0(build_threeDS_authorize0(order_id, operatorId, '4118830900940017', expDate, network, amount, currency, accountingMode, notifUrl)).__dict__)
-# print(client.threeDS_authorize1((build_threeDS_authorize1(operatorId, '30bdaed8-4a74-484e-8ef0-aea51ff2222f'))))
-# print(client.threeDS_authorize2(build_threeDS_authorize2(order_id, operatorId, '30bdaed8-4a74-484e-8ef0-aea51ff2222f')))
+#print(client.threeDS_authorize1((build_threeDS_authorize1(operatorId, '8e27cd0b-2169-4bda-8b90-0c9b4a8f70d1', 'N'))))
+print(client.threeDS_authorize2(build_threeDS_authorize2(order_id, operatorId, '8e27cd0b-2169-4bda-8b90-0c9b4a8f70d1')))
 # print(client.get_order_status(OrderStatusRequest("1585918683244786622374411366991154750417722", operatorId)))
 # client.capture(build_confirm_transaction("8032112928SL213zi0cum4z94", amount, currency, "1585918683244786622374411366991154750417722", operatorId))
-client.refund(
-    build_refund_request("8032112928SL2sc455er81pd4", "1585921420336589785834164732714370724870065", amount, currency,
-                         operatorId))
-# client.authorize(build_authorize(order_id))
+# client.refund( build_refund_request("8032112928SL2sc455er81pd4", "1585921420336589785834164732714370724870065", amount, currency,  operatorId))
+#client.authorize(build_authorize(order_id))

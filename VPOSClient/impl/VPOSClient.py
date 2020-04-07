@@ -34,13 +34,13 @@ class VPosClient:
         self._set_ssl(vpos_config.cert_path, vpos_config.cert_key)
         logging.getLogger(__name__).info("Client correctly initiated")
 
-    def build_HTML_redirect_fragment(self, paymentInfo):
+    def build_HTML_redirect_fragment(self, payment_info):
         """Create an HTML fragment for payment initiation.
-        :param paymentInfo: data transfer object containing all the payment parameters
+        :param payment_info: data transfer object containing all the payment parameters
         :return: the HTML fragment for redirect
         """
-        validate_redirect_request(paymentInfo)
-        paymentRequest = PaymentRequest(paymentInfo, self._shop_id)
+        validate_redirect_request(payment_info)
+        paymentRequest = PaymentRequest(payment_info, self._shop_id)
         return Utils.getHtml(self._url_redirect,
                              paymentRequest.getParametersMap(self._start_key, self._api_result_key, self._digest_mode))
 

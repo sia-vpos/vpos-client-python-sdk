@@ -1,3 +1,4 @@
+import hashlib
 import re
 
 from VPOSClient.impl.VPosConfig import VPosConfig
@@ -84,9 +85,7 @@ def validate_redirect_request(request):
                                                request.amount):
         invalid_fields.append(Constants.getAmountName())
 
-    if request.currency is None or not re.search(get_currency_Reg_Ex(), request.currency):
-        invalid_fields.append(Constants.getCurrencyName())
-
+    _validate_currency_and_exponent(request, invalid_fields)
     if request.order_id is None or not re.search(get_order_id_Reg_Ex(), request.order_id):
         invalid_fields.append(Constants.getOrderIdName())
 
@@ -127,6 +126,15 @@ def validate_config(config):
         invalid_fields.append(Constants.getRedirectUrlName())
     if config.proxy_scheme is not None and config.proxy_scheme is not 'http' and config.proxy_scheme is not 'https':
         invalid_fields.append(Constants.getProxySchemeName())
+    if config.algorithm is not None:
+        if config.algorithm == 'HMAC_SHA_256':
+            config.algorithm = hashlib.sha256
+        elif config.algorithm.equals == 'HMAC_SHA_512':
+            config.algorithm = hashlib.sha512
+        else:
+            invalid_fields.append(Constants.getAlgorithmName())
+    if config.algorithm is None:
+        config.algorithm = hashlib.sha256
 
     if len(invalid_fields) > 0:
         raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
@@ -206,8 +214,7 @@ def validate_threeDSAuthorization0_request(request):
                                                     request.tax_id):
         invalid_fields.append(Constants.getTaxIdName())
 
-    if request.three_ds_data is None or not isinstance(request.three_ds_data, Data3DSJsonDto):
-        invalid_fields.append(Constants.getThreeDSDataName())
+    _validate_data_3DS(request.three_ds_data, invalid_fields)
 
     if request.notify_url is None:
         invalid_fields.append(Constants.getNotifUrl())
@@ -321,3 +328,26 @@ def validate_authorize(request):
 
     if len(invalid_fields) > 0:
         raise VPOSException("Invalid or missing config params: " + str(invalid_fields))
+
+
+def _validate_data_3DS(data_3DS, invalid_fields):
+    if data_3DS is None or not isinstance(data_3DS, Data3DSJson):
+        invalid_fields.append(Constants.getThreeDSDataName())
+    if data_3DS.browserAcceptHeader is None:
+        invalid_fields.append("browserAcceptHeader")
+    if data_3DS.browserIP is None:
+        invalid_fields.append("browserIP")
+    if data_3DS.browserJavaEnabled is None:
+        invalid_fields.append("browserJavaEnabled")
+    if data_3DS.browserLanguage is None:
+        invalid_fields.append("browserLanguage")
+    if data_3DS.browserColorDepth is None:
+        invalid_fields.append("browserColorDepth")
+    if data_3DS.browserScreenHeight is None:
+        invalid_fields.append("browserScreenHeight")
+    if data_3DS.browserScreenWidth is None:
+        invalid_fields.append("browserScreenWidth")
+    if data_3DS.browserTZ is None:
+        invalid_fields.append("browserTz")
+    if data_3DS.browserUserAgent is None:
+        invalid_fields.append("browserUserAgent")

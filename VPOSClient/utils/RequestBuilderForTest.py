@@ -1,4 +1,5 @@
 from VPOSClient.request.Request import *
+import VPOSClient.request.Request
 
 data_redirect = """{"addrMatch":"N","chAccAgeInd":"04","chAccChange":"20190211","chAccChangeInd":"03","chAccDate":"20190210","chAccPwChange":"20190214","chAccPwChangeInd":"04","nbPurchaseAccount":"1000","txnActivityDay":"100","txnActivityYear":"100","shipAddressUsage":"20181220","shipAddressUsageInd":"03","shipNameIndicator":"01","billAddrCity":"billAddrCity","billAddrCountry":"004","billAddrLine1":"billAddrLine1","billAddrLine2":"billAddrLine2","billAddrLine3":"billAddrLine3","billAddrPostCode":"billAddrPostCode","billAddrState":"MI","homePhone":"39-321818198","mobilePhone":"33-312","shipAddrCity":"zio","shipAddrCountry":"008","shipAddrLine1":"shipAddrLine1","shipAddrLine2":"shipAddrLine2","shipAddrLine3":"shipAddrLine3","shipAddrPostCode\":\"shipAddrPostCode","shipAddrState":"222","workPhone":"39-0321818198","deliveryEmailAddress":"a-b@example.com","deliveryTimeframe":"02","preOrderDate":"20181220","preOrderPurchaseInd":"01","reorderItemsInd":"02","shipIndicator":"01"}"""
 
@@ -54,7 +55,7 @@ data = """{
 
 def build_threeDS_authorize0(order_id, operator_id, pan, exp_date, network, amount, currency, accounting_mode,
                              notify_url):
-    data3ds = Data3DSJsonDto.from_json(data)
+    data3ds = Data3DSJson.from_json(data)
     step1 = ThreeDSAuthorization0Request(order_id, operator_id, pan, exp_date, "01", amount, currency, "I", data3ds,
                                          notify_url)
     step1.cvv2 = "111"
@@ -67,16 +68,16 @@ def build_threeDS_authorize0(order_id, operator_id, pan, exp_date, network, amou
     return step1
 
 
-def build_threeDS_authorize1(operator_id, three_ds_transId):
-    step2 = ThreeDSAuthorization1Request(operator_id, three_ds_transId, 'N')
+def build_threeDS_authorize1(operator_id, three_ds_transId, three_ds_compl_Ind):
+    step2 = ThreeDSAuthorization1Request(operator_id, three_ds_transId, three_ds_compl_Ind)
     return step2
 
 
 def build_get_html_payment_Request(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
                                    authorMode):
-    request = PaymentInfo(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
-                          authorMode)
-    request.data_3DS_json = Data3DSJsonDto.from_json(data_redirect)
+    request = PaymentInfo(url_back, url_done, url_ms, amount, currency, order_id, accountingMode,
+                          authorMode, exponent)
+    request.data_3DS_json = Data3DSJson.from_json(data_redirect)
     request.options = "M"
     request.t_recurr = "U"
 
@@ -86,9 +87,9 @@ def build_get_html_payment_Request(url_back, url_done, url_ms, amount, currency,
 def build_get_html_payment_token_Request(url_back, url_done, url_ms, amount, currency, exponent, order_id,
                                          accountingMode,
                                          authorMode):
-    request = PaymentInfo(url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
-                          authorMode)
-    request.data_3DS_json = Data3DSJsonDto.from_json(data_redirect)
+    request = PaymentInfo(url_back, url_done, url_ms, amount, currency, order_id, accountingMode,
+                          authorMode,exponent)
+    request.data_3DS_json = Data3DSJson.from_json(data_redirect)
     request.token = "0000500550493297466"
     request.exp_date = "2112"
     request.t_recurr = "U"

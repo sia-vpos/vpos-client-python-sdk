@@ -63,27 +63,27 @@ class ThreeDSAuthorize2Response:
 
 
 class Authorization:
-    def __init__(self, authorizationXml):
-        self.paymentType = get_tag_value(authorizationXml, TagConstants.getPaymentTypeTag())
-        self.authorizationType = get_tag_value(authorizationXml, TagConstants.getAuthorizationTypeTag())
-        self.transactionID = get_tag_value(authorizationXml, TagConstants.getTransactionIDTag())
-        self.network = get_tag_value(authorizationXml, TagConstants.getNetworkTag())
-        self.orderID = get_tag_value(authorizationXml, TagConstants.getOrderIDTag())
-        self.transactionAmount = get_tag_value(authorizationXml, TagConstants.getTransactionAmountTag())
-        self.authorizedAmount = get_tag_value(authorizationXml, TagConstants.getAuthorizedAmountTag())
-        self.refundedAmount = get_tag_value(authorizationXml, TagConstants.getRefundedAmountTag())
-        self.transactionResult = get_tag_value(authorizationXml, TagConstants.getTransactionResultTag())
-        self.timestamp = get_tag_value(authorizationXml, TagConstants.getTimestampTag())
-        self.authorizationNumber = get_tag_value(authorizationXml, TagConstants.getAuthorizationNumberTag())
-        self.acquireBIN = get_tag_value(authorizationXml, TagConstants.getAcquirerBinTag())
-        self.merchantID = get_tag_value(authorizationXml, TagConstants.getMerchantIdTag())
-        self.transactionStatus = get_tag_value(authorizationXml, TagConstants.getTransactionStatusTag())
-        self.responseCodeISO = get_tag_value(authorizationXml, TagConstants.getResponseCodeIsoTag())
-        self.panTail = get_tag_value(authorizationXml, TagConstants.getPanTailTag())
-        self.panExpiryDate = get_tag_value(authorizationXml, TagConstants.getPanExpiryDateTag())
-        self.paymentTypePP = get_tag_value(authorizationXml, TagConstants.getPaymentTypePPTag())
-        self.rRN = get_tag_value(authorizationXml, TagConstants.getRRNTag())
-        self.cardType = get_tag_value(authorizationXml, TagConstants.getCardType())
+    def __init__(self, authorization_xml):
+        self.payment_type = get_tag_value(authorization_xml, TagConstants.getPaymentTypeTag())
+        self.authorization_type = get_tag_value(authorization_xml, TagConstants.getAuthorizationTypeTag())
+        self.transaction_ID = get_tag_value(authorization_xml, TagConstants.getTransactionIDTag())
+        self.network = get_tag_value(authorization_xml, TagConstants.getNetworkTag())
+        self.order_ID = get_tag_value(authorization_xml, TagConstants.getOrderIDTag())
+        self.transaction_amount = get_tag_value(authorization_xml, TagConstants.getTransactionAmountTag())
+        self.authorized_amount = get_tag_value(authorization_xml, TagConstants.getAuthorizedAmountTag())
+        self.refunded_amount = get_tag_value(authorization_xml, TagConstants.getRefundedAmountTag())
+        self.transaction_result = get_tag_value(authorization_xml, TagConstants.getTransactionResultTag())
+        self.timestamp = get_tag_value(authorization_xml, TagConstants.getTimestampTag())
+        self.authorization_number = get_tag_value(authorization_xml, TagConstants.getAuthorizationNumberTag())
+        self.acquire_BIN = get_tag_value(authorization_xml, TagConstants.getAcquirerBinTag())
+        self.merchant_ID = get_tag_value(authorization_xml, TagConstants.getMerchantIdTag())
+        self.transaction_status = get_tag_value(authorization_xml, TagConstants.getTransactionStatusTag())
+        self.response_code_ISO = get_tag_value(authorization_xml, TagConstants.getResponseCodeIsoTag())
+        self.pan_tail = get_tag_value(authorization_xml, TagConstants.getPanTailTag())
+        self.pan_expiry_date = get_tag_value(authorization_xml, TagConstants.getPanExpiryDateTag())
+        self.payment_type_PP = get_tag_value(authorization_xml, TagConstants.getPaymentTypePPTag())
+        self.rRN = get_tag_value(authorization_xml, TagConstants.getRRNTag())
+        self.card_type = get_tag_value(authorization_xml, TagConstants.getCardType())
 
 
 class ThreeDSMethod:
@@ -102,10 +102,10 @@ class ThreeDSChallenge:
 
 class PanAliasData:
     def __init__(self, pan_alias_xml):
-        self.panAlias = get_tag_value(pan_alias_xml, TagConstants.getCreatePanAliasTag())
-        self.panAliasRev = get_tag_value(pan_alias_xml, TagConstants.getPanAliasRevTag())
-        self.panAliasExpDate = get_tag_value(pan_alias_xml, TagConstants.getPanExpiryDateTag())
-        self.panAliasTail = get_tag_value(pan_alias_xml, TagConstants.getPanTailTag())
+        self.pan_alias = get_tag_value(pan_alias_xml, TagConstants.getCreatePanAliasTag())
+        self.pan_alias_rev = get_tag_value(pan_alias_xml, TagConstants.getPanAliasRevTag())
+        self.pan_alias_exp_date = get_tag_value(pan_alias_xml, TagConstants.getPanExpiryDateTag())
+        self.pan_alias_tail = get_tag_value(pan_alias_xml, TagConstants.getPanTailTag())
 
 
 class Operation:

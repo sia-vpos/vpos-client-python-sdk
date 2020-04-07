@@ -416,3 +416,7 @@ def getRedirectUrlName():
 
 def getProxySchemeName():
     return 'PROXY_SCHEME'
+
+
+def getAlgorithmName():
+    return 'ALGORITHM'

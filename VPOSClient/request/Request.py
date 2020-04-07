@@ -2,8 +2,8 @@ import json
 
 
 class PaymentInfo:
-    def __init__(self, url_back, url_done, url_ms, amount, currency, exponent, order_id, accountingMode,
-                 authorMode):
+    def __init__(self, url_back, url_done, url_ms, amount, currency, order_id, accounting_mode,
+                 author_mode, exponent=None):
         self.url_back = url_back
         self.url_done = url_done
         self.url_ms = url_ms
@@ -12,8 +12,8 @@ class PaymentInfo:
         self.currency = currency
         self.exponent = exponent
         self.order_id = order_id
-        self.accounting_mode = accountingMode
-        self.author_mode = authorMode
+        self.accounting_mode = accounting_mode
+        self.author_mode = author_mode
 
         self.data_3DS_json = None
         self.options = None
@@ -109,7 +109,7 @@ class CaptureRequest:
         self.op_descr = op_descr
 
 
-class Data3DSJsonDto:
+class Data3DSJson:
     def __init__(self, data3ds):
         data3ds_dict = dict(data3ds)
         self.browserAcceptHeader = data3ds_dict.get("browserAcceptHeader")
