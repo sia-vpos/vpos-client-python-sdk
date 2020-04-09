@@ -37,15 +37,15 @@ class Request:
 
 
 class RefundRequestXml(Request):
-    def __init__(self, refundRequestDto, shop_id):
-        super().__init__(shop_id, refundRequestDto.operator_id, refundRequestDto.options)
+    def __init__(self, refund_request, shop_id):
+        super().__init__(shop_id, refund_request.operator_id, refund_request.options)
         self._operation = 'REFUND'
-        self._transaction_id = refundRequestDto.transaction_id
-        self._order_id = refundRequestDto.order_id
-        self._amount = refundRequestDto.amount
-        self._currency = refundRequestDto.currency
-        self._exponent = refundRequestDto.exponent
-        self._op_descr = refundRequestDto.op_descr
+        self._transaction_id = refund_request.transaction_id
+        self._order_id = refund_request.order_id
+        self._amount = refund_request.amount
+        self._currency = refund_request.currency
+        self._exponent = refund_request.exponent
+        self._op_descr = refund_request.op_descr
 
     def build_request(self, api_result_key, digest_mode):
         request = self.get_request_base_xml(self._operation, TagConstants.getRefundRequestTag())
@@ -117,14 +117,14 @@ class OrderStatusRequestXml(Request):
 
 
 class CaptureRequestXml(Request):
-    def __init__(self, confirmTransactionRequestDto, shop_id):
-        super().__init__(shop_id, confirmTransactionRequestDto.operator_id, confirmTransactionRequestDto.options)
-        self._transaction_id = confirmTransactionRequestDto.transaction_id
-        self._amount = confirmTransactionRequestDto.amount
-        self._currency = confirmTransactionRequestDto.currency
-        self._exponent = confirmTransactionRequestDto.exponent
-        self._order_id = confirmTransactionRequestDto.order_id
-        self._op_descr = confirmTransactionRequestDto.op_descr
+    def __init__(self, confirm_transaction_request, shop_id):
+        super().__init__(shop_id, confirm_transaction_request.operator_id, confirm_transaction_request.options)
+        self._transaction_id = confirm_transaction_request.transaction_id
+        self._amount = confirm_transaction_request.amount
+        self._currency = confirm_transaction_request.currency
+        self._exponent = confirm_transaction_request.exponent
+        self._order_id = confirm_transaction_request.order_id
+        self._op_descr = confirm_transaction_request.op_descr
         self._operation = 'ACCOUNTING'
 
     def build_request(self, api_result_key, digest_mode):
