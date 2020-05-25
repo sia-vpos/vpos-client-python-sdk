@@ -101,6 +101,8 @@ def getCrecurrName():
 def getTrecurrName():
     return 'TRECURR'
 
+def getInstallmentsNumberName():
+    return 'INSTALLMENTSNUMBER'
 
 def getNetworkName():
     return 'NETWORK'

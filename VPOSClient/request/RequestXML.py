@@ -196,6 +196,9 @@ class ThreeDSAuthorization0RequestXML(Request):
         self._three_ds_mtd_notify_url = threeDS0_request.three_ds_mtd_notify_url
         self._challenge_win_size = threeDS0_request.challenge_win_size
         self._merchant_key = threeDS0_request.merchant_key
+        self._tRecurr = threeDS0_request.tRecurr
+        self._cRecurr = threeDS0_request.cRecurr
+        self._installments_number = threeDS0_request.installments_number
 
     def build_request(self, api_result_key, digest_mode):
         request = self.get_request_base_xml(self._operation, TagConstants.getThreeDSAuthorizationRequest0Tag())
@@ -236,6 +239,10 @@ class ThreeDSAuthorization0RequestXML(Request):
         Utils.addOptionalChild(authorization3DS, TagConstants.getCprofTag(), self._c_prof)
         Utils.addOptionalChild(authorization3DS, TagConstants.getThreeDSMtdNotifUrl(), self._three_ds_mtd_notify_url)
         Utils.addOptionalChild(authorization3DS, TagConstants.getChallengeWinSizeTag(), self._challenge_win_size)
+
+        Utils.addOptionalChild(authorization3DS, TagConstants.getTRecurrTag(), self._tRecurr)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getCRecurrTag(), self._cRecurr)
+        Utils.addOptionalChild(authorization3DS, TagConstants.getInstallmentsNumberTag(), self._installments_number)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
         mac.text = Encoder.get_mac(self._string_for_mac(api_result_key), api_result_key, digest_mode)
@@ -278,6 +285,9 @@ class ThreeDSAuthorization0RequestXML(Request):
         macString = Utils.appendField(macString, Constants.getNotifUrl(), self._notify_url)
         macString = Utils.appendField(macString, Constants.getThreeDSMtdNotifUrlName(), self._three_ds_mtd_notify_url)
         macString = Utils.appendField(macString, Constants.getChallengeWinSizeName(), self._challenge_win_size)
+        macString = Utils.appendField(macString, Constants.getTrecurrName(), self._tRecurr)
+        macString = Utils.appendField(macString, Constants.getCrecurrName(), self._cRecurr)
+        macString = Utils.appendField(macString, Constants.getInstallmentsNumberName(), self._installments_number)
         return macString
 
 
@@ -376,6 +386,7 @@ class PaymentRequest(Request):
         self._token = payment_info_request.token
         self._t_recurr = payment_info_request.t_recurr
         self._c_recurr = payment_info_request.c_recurr
+        self._installments_number = payment_info_request.installments_number
         self._iban = payment_info_request.iban
 
         self._email = payment_info_request.email
@@ -421,6 +432,7 @@ class PaymentRequest(Request):
 
         map[Constants.getTrecurrName()] = self._t_recurr
         map[Constants.getCrecurrName()] = self._c_recurr
+        map[Constants.getInstallmentsNumberName()] = self._installments_number
         map[Constants.getTokenName()] = self._token
         map[Constants.getExpDateName()] = self._exp_date
         map[Constants.getNetworkName()] = self._network
@@ -485,6 +497,8 @@ class PaymentRequest(Request):
 
         macString = Utils.appendField(macString, Constants.getTrecurrName(), self._t_recurr)
         macString = Utils.appendField(macString, Constants.getCrecurrName(), self._c_recurr)
+        macString = Utils.appendField(macString, Constants.getInstallmentsNumberName(), self._installments_number)
+
         macString = Utils.appendField(macString, Constants.getTokenName(), self._token)
         macString = Utils.appendField(macString, Constants.getExpDateName(), self._exp_date)
         macString = Utils.appendField(macString, Constants.getNetworkName(), self._network)
@@ -520,6 +534,9 @@ class OnlineAuthorizationRequestXml(Request):
         self._name = authorization_request.name
         self._surname = authorization_request.surname
         self._tax_id = authorization_request.tax_id
+        self._tRecurr = authorization_request.tRecurr
+        self._cRecurr = authorization_request.cRecurr
+        self._installments_number = authorization_request.installments_number
 
     def build_request(self, api_result_key, digest_mode):
         request = self.get_request_base_xml(self._operation, TagConstants.getAuthorizationRequestTag())
@@ -551,6 +568,10 @@ class OnlineAuthorizationRequestXml(Request):
         Utils.addOptionalChild(authorization, TagConstants.getSurnameTag(), self._surname)
 
         Utils.addOptionalChild(authorization, TagConstants.getTaxIDTag(), self._tax_id)
+        Utils.addOptionalChild(authorization, TagConstants.getTRecurrTag(), self._tRecurr)
+        Utils.addOptionalChild(authorization, TagConstants.getCRecurrTag(), self._cRecurr)
+        Utils.addOptionalChild(authorization, TagConstants.getInstallmentsNumberTag(), self._installments_number)
+
         Utils.addOptionalChild(authorization, TagConstants.getCreatePanAliasTag(), self._create_pan_alias)
 
         mac = request.find(TagConstants.getRequestTag()).find(TagConstants.getMACTag())
@@ -586,4 +607,8 @@ class OnlineAuthorizationRequestXml(Request):
         macString = Utils.appendField(macString, Constants.getNameName(), self._name)
         macString = Utils.appendField(macString, Constants.getSurnameName(), self._surname)
         macString = Utils.appendField(macString, Constants.getTaxIdName(), self._tax_id)
+
+        macString = Utils.appendField(macString, Constants.getTrecurrName(), self._tRecurr)
+        macString = Utils.appendField(macString, Constants.getCrecurrName(), self._cRecurr)
+        macString = Utils.appendField(macString, Constants.getInstallmentsNumberName(), self._installments_number)
         return macString

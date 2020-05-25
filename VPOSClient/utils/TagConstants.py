@@ -182,6 +182,18 @@ def getTaxIDTag():
     return "TaxID"
 
 
+def getTRecurrTag():
+    return "TRECURR"
+
+
+def getCRecurrTag():
+    return "CRECURR"
+
+
+def getInstallmentsNumberTag():
+    return "INSTALLMENTSNUMBER"
+
+
 def getInPersonTag():
     return "InPerson"
 

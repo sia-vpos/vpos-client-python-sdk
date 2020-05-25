@@ -40,6 +40,7 @@ class PaymentInfo:
         self.token = None
         self.t_recurr = None
         self.c_recurr = None
+        self.installments_number=None
         self.exp_date = None
         self.iban = None
         self.email = None
@@ -80,6 +81,9 @@ class ThreeDSAuthorization0Request:
         self.challenge_win_size = None
         self.merchant_key = None
         self.options = None
+        self.tRecurr = None
+        self.cRecurr = None
+        self.installments_number = None
 
 
 class ThreeDSAuthorization1Request:
@@ -226,3 +230,6 @@ class AuthorizationRequest:
         self.name = None
         self.surname = None
         self.tax_id = None
+        self.tRecurr = None
+        self.cRecurr = None
+        self.installments_number = None
