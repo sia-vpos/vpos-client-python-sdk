@@ -375,7 +375,7 @@ def getThreeDSMtdComplIndTag():
 
 
 def getACSUrlTag():
-    return 'URLAcs'
+    return 'ACSUrl'
 
 
 def getThreeDSChallengeTag():
