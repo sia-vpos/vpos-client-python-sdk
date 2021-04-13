@@ -1,8 +1,7 @@
 import logging
+import requests
 import traceback
 import urllib.parse as urlparse
-
-import requests
 
 from VPOSClient.request.RequestXML import *
 from VPOSClient.response.ResponseMapper import map_order_status_response, map_operation_response, \
@@ -156,7 +155,8 @@ class VPosClient:
         receivedMac = response.find(Constants.getMacName())
         calculatedMac = Encoder.get_mac(Utils.geResultStringForMac(response), self._api_result_key, self._digest_mode)
 
-        if (not receivedMac.text == "NULL") and (not Encoder.compare_digest(receivedMac.text, calculatedMac)):
+        if (not receivedMac.text == "NULL" and response.find(Constants.getResultName()) != "03" and response.find(
+                Constants.getResultName()) != "04") and (not Encoder.compare_digest(receivedMac.text, calculatedMac)):
             raise VPOSException("Response MAC is not valid")
 
         data = response.find(TagConstants.getDataTag())
