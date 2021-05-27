@@ -12,6 +12,7 @@ class OrderStatusResponse:
         self.order_id = None
         self.req_ref_num = None
         self.auth_list = []
+        self.card_holder_info = None
         self.pan_alias_data = None
 
 
@@ -84,7 +85,23 @@ class Authorization:
         self.payment_type_PP = get_tag_value(authorization_xml, TagConstants.getPaymentTypePPTag())
         self.rRN = get_tag_value(authorization_xml, TagConstants.getRRNTag())
         self.card_type = get_tag_value(authorization_xml, TagConstants.getCardType())
+        self.card_holder_info = get_tag_value(authorization_xml, TagConstants.getCardHolderInfoTag())
+        self.installments_number = get_tag_value(authorization_xml, TagConstants.getInstallmentsNumberTag())
+        self.tickler_merchant_code = get_tag_value(authorization_xml, TagConstants.getTicklerMerchantCodeTag())
+        self.tickler_plan_code = get_tag_value(authorization_xml, TagConstants.getTicklerPlanCodeTag())
+        self.tickler_subscription_code = get_tag_value(authorization_xml, TagConstants.getTicklerSubscriptionCodeTag())
 
+class CardHolderData:
+    def __init__(self, card_holder_info_xml):
+        self.card_holder_name = get_tag_value(card_holder_info_xml, TagConstants.getCardHolderNameTag())
+        self.card_holder_email = get_tag_value(card_holder_info_xml, TagConstants.getCardHolderEmailTag())
+        self.billing_address_postal_code = get_tag_value(card_holder_info_xml, TagConstants.getBillingAddressPostalcodeTag())
+        self.billing_address_city = get_tag_value(card_holder_info_xml, TagConstants.getBillingAddressCityTag())
+        self.billing_address_line_1 = get_tag_value(card_holder_info_xml, TagConstants.getBillingAddressLine1Tag())
+        self.billing_address_line_2 = get_tag_value(card_holder_info_xml, TagConstants.getBillingAddressLine2Tag())
+        self.billing_address_line_3 = get_tag_value(card_holder_info_xml, TagConstants.getBillingAddressLine3Tag())
+        self.billing_address_state = get_tag_value(card_holder_info_xml, TagConstants.getBillingAddressStateTag())
+        self.billing_address_country = get_tag_value(card_holder_info_xml, TagConstants.getBillingAddressCountryTag())
 
 class ThreeDSMethod:
     def __init__(self, three_ds_method_xml):

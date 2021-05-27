@@ -185,8 +185,22 @@ def getAuthorizationStringForMac(authorizationXml):
     stringForMac = append_optional_field_for_verification(stringForMac,
                                                           authorizationXml.find(TagConstants.getPaymentTypePPTag()))
     stringForMac = append_optional_field_for_verification(stringForMac, authorizationXml.find(TagConstants.getRRNTag()))
+
     stringForMac = append_optional_field_for_verification(stringForMac,
                                                           authorizationXml.find(TagConstants.getCardType()))
+
+    stringForMac = append_optional_field_for_verification(stringForMac,
+                                                          authorizationXml.find(TagConstants.getCardHolderInfoTag()))
+    stringForMac = append_optional_field_for_verification(stringForMac,
+                                                          authorizationXml.find(TagConstants.getInstallmentsNumberTag()))
+    stringForMac = append_optional_field_for_verification(stringForMac,
+                                                          authorizationXml.find(TagConstants.getTicklerMerchantCodeTag()))
+    stringForMac = append_optional_field_for_verification(stringForMac,
+                                                          authorizationXml.find(TagConstants.getTicklerPlanCodeTag()))
+    stringForMac = append_optional_field_for_verification(stringForMac,
+                                                          authorizationXml.find(TagConstants.getTicklerSubscriptionCodeTag()))
+
+
     return stringForMac
 
 
