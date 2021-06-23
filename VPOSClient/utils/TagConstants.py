@@ -428,3 +428,63 @@ def getPanAliasDataTag():
 
 def getAuthorizationRequestTag():
     return 'AuthorizationRequest'
+
+
+def getCardHolderInfoTag():
+    return 'CardholderInfo'
+
+
+def getInstallmentsNumberTag():
+    return 'InstallmentsNumber'
+
+
+def getTicklerMerchantCodeTag():
+    return 'TicklerMerchantCode'
+
+
+def getTicklerPlanCodeTag():
+    return 'TicklerPlanCode'
+
+
+def getTicklerSubscriptionCodeTag():
+    return 'TicklerSubscriptionCode'
+
+
+def getCardHolderDataTag():
+    return 'CardHolderData'
+
+
+def getCardHolderNameTag():
+    return 'CardHolderName'
+
+
+def getCardHolderEmailTag():
+    return 'CardHolderEmail'
+
+
+def getBillingAddressPostalcodeTag():
+    return 'BillingAddressPostalcode'
+
+
+def getBillingAddressCityTag():
+    return 'BillingAddressCity'
+
+
+def getBillingAddressLine1Tag():
+    return 'BillingAddressLine1'
+
+
+def getBillingAddressLine2Tag():
+    return 'BillingAddressLine2'
+
+
+def getBillingAddressLine3Tag():
+    return 'BillingAddressLine3'
+
+
+def getBillingAddressStateTag():
+    return 'BillingAddressState'
+
+
+def getBillingAddressCountryTag():
+    return 'BillingAddressCountry'

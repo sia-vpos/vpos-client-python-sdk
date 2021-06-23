@@ -1,6 +1,6 @@
 from VPOSClient.response.Response import OrderStatusResponse, Authorization, PanAliasData, OperationResponse, Operation, \
     AuthorizeResponse, ThreeDSAuthorize0Response, ThreeDSMethod, ThreeDSChallenge, ThreeDSAuthorize1Response, \
-    ThreeDSAuthorize2Response
+    ThreeDSAuthorize2Response, CardHolderData
 from VPOSClient.utils import Utils, TagConstants
 from VPOSClient.utils.Utils import get_tag_value
 
@@ -21,6 +21,10 @@ def map_order_status_response(response):
     if (data is not None) and (data.find(TagConstants.getPanAliasDataTag()) is not None):
         pan_alias_xml = PanAliasData(data.find(TagConstants.getPanAliasDataTag()))
         response_status.pan_alias_data = pan_alias_xml
+
+    if (data is not None) and (data.find(TagConstants.getCardHolderDataTag()) is not None):
+        card_holder_data_xml = CardHolderData(data.find(TagConstants.getCardHolderDataTag()))
+        response_status.card_holder_info = card_holder_data_xml
 
     return response_status
 
