@@ -84,7 +84,7 @@ def get_exp_date_Reg_Ex():
 def get_operator_id_Reg_Ex():
     min_len = 8
     max_len = 18
-    return "[a-zA-Z0-9]{" + str(min_len) + "," + str(max_len) + "}"
+    return "^.{" + str(min_len) + "," + str(max_len) + "}$"
 
 
 def get_network_Reg_Ex():
