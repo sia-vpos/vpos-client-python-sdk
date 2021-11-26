@@ -133,7 +133,7 @@ def get_currency_Reg_Ex():
 
 def get_product_ref_Reg_Ex():
     min_len = 1
-    max_len = 15
+    max_len = 50
     return ".{" + str(min_len) + "," + str(max_len) + "}"
 
 
